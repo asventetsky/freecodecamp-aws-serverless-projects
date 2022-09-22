@@ -34,7 +34,7 @@ data "archive_file" "api_composer_archive" {
 resource "aws_lambda_function" "api_composer" {
 
   function_name = "api-composer"
-  role          = aws_iam_role.api_composer_role.arn
+  role          = aws_iam_role.api_composer_lambda_role.arn
   filename      = data.archive_file.api_composer_archive.output_path
 
   source_code_hash = data.archive_file.api_composer_archive.output_base64sha256
@@ -48,25 +48,8 @@ resource "aws_lambda_function" "api_composer" {
   }
 }
 
-resource "aws_iam_role" "api_composer_role" {
-  name = "lambda-api-composer-role"
+resource "aws_cloudwatch_log_group" "api_composer_lambda" {
+  name = "/aws/lambda/${aws_lambda_function.api_composer.function_name}"
 
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-      },
-    ]
-  })
-
-  tags = {
-    "Terraform" = "true"
-  }
+  retention_in_days = 1
 }

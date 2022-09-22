@@ -1,3 +1,4 @@
+import json
 import requests
 
 URL = 'https://icanhazdadjoke.com/'
@@ -6,9 +7,9 @@ headers = {'Accept': 'application/json'}
 def lambda_handler(event, context):
 
     result = {
-        'statusCode' : 200,
-        'headers': {
-            'Content-Type': 'application/json'
+        "statusCode" : 200,
+        "headers": {
+            "Content-Type": "application/json"
         }
     }
 
@@ -19,14 +20,16 @@ def lambda_handler(event, context):
         joke2 = joke2_response.json()['joke']
     except Exception as error:
         print('Internal server error', error)
-        result['statusCode'] = 500
-        result['body'] = {
-            'error': 'Internal server error'
-        }
+        result["statusCode"] = 500
+        result["body"] = json.dumps({
+            "error": "Internal server error"
+        })
     else:
-        result['body'] = {
-            'joke_1': joke1,
-            'joke_2': joke2
-        }
+        result["body"] = json.dumps({
+            "joke_1": joke1,
+            "joke_2": joke2
+        })
+
+    print("Combined response: ", result)
 
     return result
