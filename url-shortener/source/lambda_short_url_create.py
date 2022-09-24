@@ -20,6 +20,12 @@ def lambda_handler(event, context):
         }
     )
 
-    print(data)
+    print("Response from DynamoDB: ", data)
 
-    return data
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": "success"
+    }
