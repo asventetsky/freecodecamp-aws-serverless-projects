@@ -57,6 +57,15 @@ resource "aws_lambda_permission" "apigw" {
   source_arn = "${aws_api_gateway_rest_api.short_url.execution_arn}/*/*"
 }
 
+resource "aws_lambda_permission" "apigw_fasfsd" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_original_url_get.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.short_url.execution_arn}/*/*"
+}
+
 resource "aws_api_gateway_account" "apigw_account" {
   cloudwatch_role_arn = aws_iam_role.apigw_cloudwatch.arn
 }

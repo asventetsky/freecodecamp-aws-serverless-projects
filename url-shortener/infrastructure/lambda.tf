@@ -30,3 +30,30 @@ resource "aws_cloudwatch_log_group" "lambda_short_url_create" {
 
   retention_in_days = 1
 }
+
+// =======================
+// lambda-original-url-get
+// =======================
+data "archive_file" "lambda_original_url_get_archive" {
+  source_file  = "../source/lambda_original_url_get.py"
+  output_path = "lambda_original_url_get.zip"
+  type        = "zip"
+}
+
+resource "aws_lambda_function" "lambda_original_url_get" {
+
+  function_name = "lambda-original-url-get"
+  role          = aws_iam_role.lambda_short_url_role.arn
+  filename      = data.archive_file.lambda_original_url_get_archive.output_path
+  source_code_hash = data.archive_file.lambda_original_url_get_archive.output_base64sha256
+  handler = "lambda_original_url_get.lambda_handler"
+  runtime = "python3.9"
+
+  tags = local.tags
+}
+
+resource "aws_cloudwatch_log_group" "lambda_original_url_get" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_original_url_get.function_name}"
+
+  retention_in_days = 1
+}

@@ -26,12 +26,15 @@ def lambda_handler(event, context):
     )
 
     # resourcePath is already contains slash
-    serviceUrl = f"https://{event['headers']['Host']}/{event['requestContext']['stage']}{event['requestContext']['resourcePath']}"
+    serviceUrl = f"https://{event['headers']['Host']}/{event['requestContext']['stage']}"
+
+    short_url = f"{serviceUrl}/original-url/{hash}"
+    print(f"Generated short url: {short_url}")
 
     return {
         "statusCode": 200,
         "headers": {
             "Content-Type": "application/json"
         },
-        "body": f"{serviceUrl}/{hash}"
+        "body": short_url
     }
