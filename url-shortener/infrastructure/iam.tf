@@ -1,5 +1,5 @@
-resource "aws_iam_role" "lambda_short_url_role" {
-  name = "lambda-short-url-role"
+resource "aws_iam_role" "lambda_url_shortener_role" {
+  name = "lambda-url-shortener-role"
 
 
   assume_role_policy = jsonencode({
@@ -21,8 +21,8 @@ resource "aws_iam_role" "lambda_short_url_role" {
   }
 }
 
-resource "aws_iam_policy" "lambda_short_url_policy" {
-  name = "lambda-short-url-policy"
+resource "aws_iam_policy" "lambda_url_shortener_policy" {
+  name = "lambda-url-shortener-policy"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -35,7 +35,10 @@ resource "aws_iam_policy" "lambda_short_url_policy" {
         Resource : "arn:aws:logs:*:*:*"
       },
       {
-        Action : "dynamodb:PutItem",
+        Action : [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem"
+        ],
         Effect : "Allow",
         Resource : "${aws_dynamodb_table.short_urls.arn}"
       }
@@ -43,27 +46,27 @@ resource "aws_iam_policy" "lambda_short_url_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_short_url_lambda" {
-  role = aws_iam_role.lambda_short_url_role.name
-  policy_arn = aws_iam_policy.lambda_short_url_policy.arn
+resource "aws_iam_role_policy_attachment" "lambda_url_shortener_lambda" {
+  role = aws_iam_role.lambda_url_shortener_role.name
+  policy_arn = aws_iam_policy.lambda_url_shortener_policy.arn
 }
 
-resource "aws_lambda_permission" "apigw" {
+resource "aws_lambda_permission" "url_shortener_lambda_short_url_create" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_short_url_create.function_name
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_api_gateway_rest_api.short_url.execution_arn}/*/*"
+  source_arn = "${aws_api_gateway_rest_api.url_shortener.execution_arn}/*/*"
 }
 
-resource "aws_lambda_permission" "apigw_fasfsd" {
+resource "aws_lambda_permission" "url_shortener_lambda_original_url_get" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_original_url_get.function_name
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_api_gateway_rest_api.short_url.execution_arn}/*/*"
+  source_arn = "${aws_api_gateway_rest_api.url_shortener.execution_arn}/*/*"
 }
 
 resource "aws_api_gateway_account" "apigw_account" {

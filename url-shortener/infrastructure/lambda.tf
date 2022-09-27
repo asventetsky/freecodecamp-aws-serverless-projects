@@ -16,7 +16,7 @@ data "archive_file" "lambda_short_url_create_archive" {
 resource "aws_lambda_function" "lambda_short_url_create" {
 
   function_name = "lambda-short-url-create"
-  role          = aws_iam_role.lambda_short_url_role.arn
+  role          = aws_iam_role.lambda_url_shortener_role.arn
   filename      = data.archive_file.lambda_short_url_create_archive.output_path
   source_code_hash = data.archive_file.lambda_short_url_create_archive.output_base64sha256
   handler = "lambda_short_url_create.lambda_handler"
@@ -43,7 +43,7 @@ data "archive_file" "lambda_original_url_get_archive" {
 resource "aws_lambda_function" "lambda_original_url_get" {
 
   function_name = "lambda-original-url-get"
-  role          = aws_iam_role.lambda_short_url_role.arn
+  role          = aws_iam_role.lambda_url_shortener_role.arn
   filename      = data.archive_file.lambda_original_url_get_archive.output_path
   source_code_hash = data.archive_file.lambda_original_url_get_archive.output_base64sha256
   handler = "lambda_original_url_get.lambda_handler"
