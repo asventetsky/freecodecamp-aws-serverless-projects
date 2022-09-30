@@ -3,6 +3,7 @@
 // ============================
 resource "aws_ecr_repository" "ecr_repo" {
   name = "reminder-app"
+  force_delete = "true"
 }
 
 resource null_resource build_lambda_reminder_event_create_ecr_image {
@@ -36,6 +37,13 @@ resource "aws_lambda_function" "lambda_reminder_event_create" {
   package_type = "Image"
   image_uri = "${aws_ecr_repository.ecr_repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
 
+  environment {
+    variables = {
+      lambda_function_name = aws_lambda_function.lambda_reminder_send.function_name
+      lambda_function_arn = aws_lambda_function.lambda_reminder_send.arn
+    }
+  }
+
   tags = local.tags
 }
 
@@ -43,6 +51,23 @@ resource "aws_cloudwatch_log_group" "lambda_reminder_event_create" {
   name = "/aws/lambda/${aws_lambda_function.lambda_reminder_event_create.function_name}"
 
   retention_in_days = 1
+}
+
+resource "aws_lambda_event_source_mapping" "trigger_lambda_reminder_event_create_by_dynamodb_stream" {
+  depends_on = [
+    aws_dynamodb_table.reminders,
+    aws_lambda_function.lambda_reminder_event_create
+  ]
+  event_source_arn  = aws_dynamodb_table.reminders.stream_arn
+  function_name     = aws_lambda_function.lambda_reminder_event_create.arn
+  starting_position = "LATEST"
+  maximum_retry_attempts = 1
+
+  filter_criteria {
+    filter  {
+      pattern = "{\"eventName\": [ \"INSERT\" ]}"
+    }
+  }
 }
 
 // ============================

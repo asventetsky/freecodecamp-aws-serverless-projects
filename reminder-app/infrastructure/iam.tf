@@ -39,6 +39,23 @@ resource "aws_iam_policy" "lambda_reminder_event_create_policy" {
         ],
         Effect : "Allow",
         Resource : aws_cloudwatch_event_bus.reminders_events.arn
+      },
+      {
+        Action: [
+//          "dynamodb:BatchGetItem",
+//          "dynamodb:GetItem",
+          "dynamodb:GetRecords",
+//          "dynamodb:Scan",
+//          "dynamodb:Query",
+          "dynamodb:GetShardIterator",
+          "dynamodb:DescribeStream",
+          "dynamodb:ListStreams"
+        ],
+        Effect: "Allow",
+        Resource: [
+          aws_dynamodb_table.reminders.arn,
+          "${aws_dynamodb_table.reminders.arn}/*"
+        ]
       }
     ]
   })
@@ -94,9 +111,9 @@ resource "aws_iam_role_policy_attachment" "lambda_reminder_send" {
   policy_arn = aws_iam_policy.lambda_reminder_send_policy.arn
 }
 
-resource "aws_lambda_permission" "allow_lambda_reminder_send_by_event_bridge" {
-  action = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_reminder_send.function_name
-  principal = "events.amazonaws.com"
-  source_arn = aws_cloudwatch_event_rule.reminders_events.arn
-}
+//resource "aws_lambda_permission" "allow_lambda_reminder_send_by_event_bridge" {
+//  action = "lambda:InvokeFunction"
+//  function_name = aws_lambda_function.lambda_reminder_send.function_name
+//  principal = "events.amazonaws.com"
+//  source_arn = aws_cloudwatch_event_rule.reminders_events.arn
+//}
