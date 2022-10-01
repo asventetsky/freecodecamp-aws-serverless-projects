@@ -35,18 +35,23 @@ resource "aws_iam_policy" "lambda_reminder_event_create_policy" {
       },
       {
         Action : [
-          "events:PutEvents"
+          "events:PutRule",
+          "events:PutEvents",
+          "events:PutTargets"
         ],
         Effect : "Allow",
-        Resource : aws_cloudwatch_event_bus.reminders_events.arn
+        Resource : "*"
+      },
+      {
+        Action : [
+          "lambda:AddPermission"
+        ],
+        Effect : "Allow",
+        Resource : aws_lambda_function.lambda_reminder_send.arn
       },
       {
         Action: [
-//          "dynamodb:BatchGetItem",
-//          "dynamodb:GetItem",
           "dynamodb:GetRecords",
-//          "dynamodb:Scan",
-//          "dynamodb:Query",
           "dynamodb:GetShardIterator",
           "dynamodb:DescribeStream",
           "dynamodb:ListStreams"
