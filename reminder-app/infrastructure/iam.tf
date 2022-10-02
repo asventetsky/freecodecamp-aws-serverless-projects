@@ -106,7 +106,14 @@ resource "aws_iam_policy" "lambda_reminder_send_policy" {
         ],
         Effect : "Allow",
         Resource : "arn:aws:logs:*:*:*"
-      }
+      },
+      {
+        Action : [
+          "ses:SendEmail"
+        ],
+        Effect : "Allow",
+        Resource : "*"
+      },
     ]
   })
 }

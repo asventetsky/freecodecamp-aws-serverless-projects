@@ -1,7 +1,6 @@
 import boto3
 import os
 from datetime import datetime, timedelta
-import pytz
 import hashlib
 
 from botocore.exceptions import ClientError
@@ -27,8 +26,7 @@ def process_record(record):
     message = record['message']['S']
     print(f"Notif: {notif_type}, trigger datetime: {trigger_datetime}, message: {message}")
 
-    almaty_tz = pytz.timezone("Asia/Almaty")
-    d = datetime.now(almaty_tz) + timedelta(minutes=5)
+    d = datetime.now() + timedelta(minutes=1)
     event_schedule = f"cron({d.minute} {d.hour} {d.day} {d.month} ? {d.year})"
     print(f"Event schedule: {event_schedule}")
 
@@ -65,7 +63,13 @@ def process_record(record):
     try:
         response = eventbridge_client.put_targets(
             Rule=event_rule_name,
-            Targets=[{'Id': lambda_function_name, 'Arn': lambda_function_arn}]
+            Targets=[
+                {
+                    'Id': lambda_function_name,
+                    'Arn': lambda_function_arn,
+                    'Input': '{"name": "value"}'
+                }
+            ]
         )
         if response['FailedEntryCount'] > 0:
             print(f"Couldn't set {lambda_function_name} as the target for {event_rule_name}.")

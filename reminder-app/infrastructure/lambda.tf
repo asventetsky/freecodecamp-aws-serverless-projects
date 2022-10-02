@@ -99,7 +99,7 @@ data aws_ecr_image lambda_reminder_send_image {
 
 resource "aws_lambda_function" "lambda_reminder_send" {
   function_name = "lambda-reminder-send"
-  role = aws_iam_role.lambda_reminder_event_create_role.arn
+  role = aws_iam_role.lambda_reminder_send_role.arn
 
   package_type = "Image"
   image_uri = "${aws_ecr_repository.ecr_repo.repository_url}@${data.aws_ecr_image.lambda_reminder_send_image.id}"
