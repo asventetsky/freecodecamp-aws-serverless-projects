@@ -129,3 +129,55 @@ resource "aws_iam_role_policy_attachment" "lambda_reminder_send" {
 //  principal = "events.amazonaws.com"
 //  source_arn = aws_cloudwatch_event_rule.reminders_events.arn
 //}
+
+// ============================
+// lambda-reminder-create
+// ============================
+resource "aws_iam_role" "lambda_reminder_create_role" {
+  name = "lambda-reminder-create-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "lambda_reminder_create_policy" {
+  name = "lambda-reminder-create-policy"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        Action : [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Effect : "Allow",
+        Resource : "arn:aws:logs:*:*:*"
+      },
+      {
+        Action : [
+          "dynamodb:PutItem"
+        ],
+        Effect : "Allow",
+        Resource : "${aws_dynamodb_table.reminders.arn}"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_reminder_create" {
+  role = aws_iam_role.lambda_reminder_create_role.name
+  policy_arn = aws_iam_policy.lambda_reminder_create_policy.arn
+}
