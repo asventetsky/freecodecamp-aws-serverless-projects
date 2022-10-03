@@ -9,14 +9,16 @@ def handler(event, context):
 
     print(f"Event: {event}")
 
-    message = "Publish next youtube video"
-    destination = "artyom.sven@gmail.com"
+    # hardcoded value of source address
+    source = "paul.grubov@gmail.com"
+    destination = event["destination"]
+    message = event["message"]
 
     CHARSET = "UTF-8"
     HTML_EMAIL_CONTENT = """
         <html>
             <head></head>
-            <h1 style='text-align:center'>This is the heading</h1>
+            <h1 style='text-align:center'>Reminder App: don't forget about it!</h1>
             <p>{message}</p>
             </body>
         </html>
@@ -24,7 +26,8 @@ def handler(event, context):
 
 
     try:
-        response = ses_client.send_email(
+        ses_client.send_email(
+            Source=source,
             Destination={
                 "ToAddresses": [
                     destination,
@@ -39,10 +42,9 @@ def handler(event, context):
                 },
                 "Subject": {
                     "Charset": CHARSET,
-                    "Data": "Amazing Email Tutorial",
+                    "Data": "Reminder App"
                 },
-            },
-            Source=destination,
+            }
         )
         print(f"Sent email to {destination}.")
     except ClientError as error:
