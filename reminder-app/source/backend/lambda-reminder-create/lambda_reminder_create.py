@@ -14,7 +14,7 @@ def handler(event, context):
 
 
 def construct_request(event):
-    body = event['body']
+    body = json.loads(event['body'])
     request = {
         "user_id": body['userId'],
         "trigger_datetime": body['triggerDatetime'],

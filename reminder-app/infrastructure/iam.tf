@@ -171,7 +171,7 @@ resource "aws_iam_policy" "lambda_reminder_create_policy" {
           "dynamodb:PutItem"
         ],
         Effect : "Allow",
-        Resource : "${aws_dynamodb_table.reminders.arn}"
+        Resource : aws_dynamodb_table.reminders.arn
       }
     ]
   })
@@ -180,4 +180,13 @@ resource "aws_iam_policy" "lambda_reminder_create_policy" {
 resource "aws_iam_role_policy_attachment" "lambda_reminder_create" {
   role = aws_iam_role.lambda_reminder_create_role.name
   policy_arn = aws_iam_policy.lambda_reminder_create_policy.arn
+}
+
+resource "aws_lambda_permission" "lambda_reminder_create" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_reminder_create.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.reminder.execution_arn}/*/*"
 }
