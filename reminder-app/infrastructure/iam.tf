@@ -109,7 +109,8 @@ resource "aws_iam_policy" "lambda_reminder_send_policy" {
       },
       {
         Action : [
-          "ses:SendEmail"
+          "ses:SendEmail",
+          "SNS:Publish"
         ],
         Effect : "Allow",
         Resource : "*"

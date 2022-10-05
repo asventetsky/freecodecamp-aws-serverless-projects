@@ -94,12 +94,14 @@ def add_permission_to_invoke_lambda(lambda_function_name, event_rule_arn, dateti
 
 
 def add_target_for_event_bridge_rule(lambda_function_name, lambda_function_arn, event_rule_name, details):
+    notification_type = details['notification_type']
     destination = details['destination']
     message = details['message']
 
     input = {
         "destination": destination,
-        "message": message
+        "message": message,
+        "notification_type": notification_type
     }
 
     try:
