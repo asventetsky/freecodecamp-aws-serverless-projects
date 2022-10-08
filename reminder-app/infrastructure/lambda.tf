@@ -155,3 +155,46 @@ resource "aws_cloudwatch_log_group" "lambda_reminder_create" {
 
   retention_in_days = 1
 }
+
+// ============================
+// lambda-reminders-get
+// ============================
+resource null_resource build_lambda_reminders_get_ecr_image {
+  triggers = {
+    python_file = md5(file("../source/backend/lambda-reminders-get/lambda_reminders_get.py"))
+    docker_file = md5(file("../source/backend/lambda-reminders-get/Dockerfile"))
+  }
+
+  provisioner "local-exec" {
+    command = <<EOF
+           $(aws ecr get-login --region ${var.region} --no-include-email)
+           cd ../source/backend/lambda-reminders-get
+           docker build -t ${aws_ecr_repository.ecr_repo.repository_url}:${local.lambda_reminders_get} .
+           docker push ${aws_ecr_repository.ecr_repo.repository_url}:${local.lambda_reminders_get}
+       EOF
+  }
+}
+
+data aws_ecr_image lambda_reminders_get_image {
+  depends_on = [
+    null_resource.build_lambda_reminders_get_ecr_image
+  ]
+  repository_name = aws_ecr_repository.ecr_repo.name
+  image_tag       = local.lambda_reminders_get
+}
+
+resource "aws_lambda_function" "lambda_reminders_get" {
+  function_name = "lambda-reminders-get"
+  role = aws_iam_role.lambda_reminders_get_role.arn
+
+  package_type = "Image"
+  image_uri = "${aws_ecr_repository.ecr_repo.repository_url}@${data.aws_ecr_image.lambda_reminders_get_image.id}"
+
+  tags = local.tags
+}
+
+resource "aws_cloudwatch_log_group" "lambda_reminders_get" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_reminders_get.function_name}"
+
+  retention_in_days = 1
+}

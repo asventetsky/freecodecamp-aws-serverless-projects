@@ -14,5 +14,18 @@ resource "aws_dynamodb_table" "reminders" {
     type = "S"
   }
 
+  attribute {
+    name = "user_id"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name = "UserIdIndex"
+    hash_key = "user_id"
+    projection_type = "ALL"
+    read_capacity= "30"
+    write_capacity= "30"
+  }
+
   tags = local.tags
 }

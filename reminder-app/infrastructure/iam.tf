@@ -191,3 +191,67 @@ resource "aws_lambda_permission" "lambda_reminder_create" {
 
   source_arn = "${aws_api_gateway_rest_api.reminder.execution_arn}/*/*"
 }
+
+// ============================
+// lambda-reminders-get
+// ============================
+resource "aws_iam_role" "lambda_reminders_get_role" {
+  name = "lambda-reminders-get-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "lambda_reminders_get_policy" {
+  name = "lambda-reminders-get-policy"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        Action : [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Effect : "Allow",
+        Resource : "arn:aws:logs:*:*:*"
+      },
+      {
+        Action : [
+          "dynamodb:Query"
+        ],
+        Effect : "Allow",
+        Resource : [
+          aws_dynamodb_table.reminders.arn,
+          "${aws_dynamodb_table.reminders.arn}/index/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_reminders_get" {
+  role = aws_iam_role.lambda_reminders_get_role.name
+  policy_arn = aws_iam_policy.lambda_reminders_get_policy.arn
+}
+
+resource "aws_lambda_permission" "lambda_reminders_get" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_reminders_get.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.reminder.execution_arn}/*/*"
+}
