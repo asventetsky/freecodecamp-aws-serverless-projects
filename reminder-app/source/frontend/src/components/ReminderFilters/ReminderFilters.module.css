@@ -1,0 +1,13 @@
+.ReminderFilters {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: unset auto;
+}
+.ReminderFilters > * {
+    flex: 1 1 49%;
+}
+.ReminderFilters > * + * {
+    margin-left: 0.8rem;
+}
+
