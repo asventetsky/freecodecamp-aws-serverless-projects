@@ -1,21 +1,13 @@
 import React from "react";
+import classes from "./Reminder.module.css"
 
 const Reminder = props => (
-
-    <li className="todo stack-small">
-        <div className="c-cb">
-            <input id="todo-0" type="checkbox" defaultChecked={props.completed}/>
-            <label className="todo-label" htmlFor="todo-0">
-                {props.name}
-            </label>
+    <li className={classes.reminder}>
+        <div className={classes.message}>
+            {props.message}
         </div>
-        <div className="btn-group">
-            <button type="button" className="btn">
-                Edit <span className="visually-hidden">{props.name}</span>
-            </button>
-            <button type="button" className="btn btn__danger">
-                Delete <span className="visually-hidden">{props.name}</span>
-            </button>
+        <div className={classes.triggerDate}>
+            {props.triggerDatetime}
         </div>
     </li>
 )
