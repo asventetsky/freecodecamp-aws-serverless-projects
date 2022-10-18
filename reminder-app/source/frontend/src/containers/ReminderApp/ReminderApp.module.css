@@ -19,47 +19,18 @@
 html {
     font: 62.5% / 1.15 sans-serif;
 }
-h1,
-h2 {
-    margin-bottom: 0;
+h1 {
+    text-align: center;
 }
 ul {
     list-style: none;
     padding: 0;
 }
 button {
-    border: none;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    overflow: visible;
     background: transparent;
     color: inherit;
     font: inherit;
-    line-height: normal;
-    -webkit-font-smoothing: inherit;
-    -moz-osx-font-smoothing: inherit;
-    appearance: none;
-}
-button::-moz-focus-inner {
-    border: 0;
-}
-button,
-input,
-optgroup,
-select,
-textarea {
-    font-family: inherit;
-    font-size: 100%;
-    line-height: 1.15;
-    margin: 0;
-}
-button,
-input {
-    overflow: visible;
-}
-input[type="text"] {
-    border-radius: 0;
+
 }
 body {
     width: 100%;
@@ -73,74 +44,5 @@ body {
     body {
         font-size: 1.9rem;
         line-height: 1.31579;
-    }
-}
-/*END RESETS*/
-/* GLOBAL STYLES */
-.form-group > input[type="text"] {
-    display: inline-block;
-    margin-top: 0.4rem;
-}
-.btn {
-    padding: 0.8rem 1rem 0.7rem;
-    border: 0.2rem solid #4d4d4d;
-    cursor: pointer;
-    text-transform: capitalize;
-}
-.btn.toggle-btn {
-    border-width: 1px;
-    border-color: #d3d3d3;
-}
-.btn.toggle-btn[aria-pressed="true"] {
-    text-decoration: underline;
-    border-color: #4d4d4d;
-}
-.btn__danger {
-    color: #fff;
-    background-color: #ca3c3c;
-    border-color: #bd2130;
-}
-.btn__filter {
-    border-color: lightgrey;
-}
-.btn__primary {
-    color: #fff;
-    background-color: #000;
-}
-
-.label-wrapper {
-    margin: 0;
-    flex: 0 0 100%;
-    text-align: center;
-}
-
-/* END GLOBAL STYLES */
-
-.label__lg {
-    line-height: 1.01567;
-    font-weight: 300;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    text-align: center;
-}
-.input__lg {
-    padding: 2rem;
-    border: 2px solid #000;
-}
-.input__lg:focus {
-    border-color: #4d4d4d;
-    box-shadow: inset 0 0 0 2px;
-}
-[class*="__lg"] {
-    display: inline-block;
-    width: 100%;
-    font-size: 1.9rem;
-}
-[class*="__lg"]:not(:last-child) {
-    margin-bottom: 1rem;
-}
-@media screen and (min-width: 620px) {
-    [class*="__lg"] {
-        font-size: 2.4rem;
     }
 }

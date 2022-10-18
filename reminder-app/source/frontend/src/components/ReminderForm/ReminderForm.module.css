@@ -1,0 +1,31 @@
+.form {
+    margin: 2rem;
+}
+.formRow {
+    display: flex;
+    justify-content: flex-end;
+    padding: .5em;
+}
+.formRow > label {
+    padding: .5em 1em .5em 0;
+    flex: 1;
+}
+.formRow > input {
+    border-radius: 0.5rem;
+    flex: 2;
+}
+.formRow > input:focus,
+.formRow > button:focus {
+    outline: none;
+}
+.formRow > input,
+.formRow > button {
+    padding: 1rem;
+}
+.formRow > button {
+    background-color: black;
+    color: white;
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
