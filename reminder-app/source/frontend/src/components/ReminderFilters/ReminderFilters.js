@@ -4,9 +4,9 @@ import classes from "./ReminderFilters.module.css"
 
 const RemindersFilters = props => (
     <div className={classes.ReminderFilters}>
-        <FilterButton text="All"/>
-        <FilterButton text="Active"/>
-        <FilterButton text="Completed"/>
+        <FilterButton text="All" pressed={true}/>
+        <FilterButton text="Active" pressed={false}/>
+        <FilterButton text="Completed" pressed={false}/>
     </div>
 )
 

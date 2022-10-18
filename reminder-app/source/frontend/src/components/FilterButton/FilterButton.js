@@ -1,10 +1,22 @@
-import React from "react";
+import React, {Component} from "react";
 import classes from './FilterButton.module.css'
 
-const FilterButton = props => (
-    <button type="button" className={classes.FilterButton} aria-pressed="true">
-        {props.text}
-    </button>
-)
+class FilterButton extends Component {
+
+    render() {
+
+        const cls = [classes.button]
+
+        if (this.props.pressed) {
+            cls.push(classes.pressed)
+        }
+
+        return (
+            <button type="button" className={cls.join(' ')}>
+                {this.props.text}
+            </button>
+        )
+    }
+}
 
 export default FilterButton;
