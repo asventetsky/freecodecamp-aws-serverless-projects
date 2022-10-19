@@ -1,12 +1,13 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import ReminderForm from "../../components/ReminderForm/ReminderForm";
 import ReminderFilters from "../../components/ReminderFilters/ReminderFilters";
 import RemindersList from "../../components/ReminderList/RemindersList";
 import classes from "./ReminderApp.module.css"
 
-class ReminderApp extends Component {
-    state = {
-        reminders: [
+export default function ReminderApp() {
+
+    const [reminders, setReminders] = useState(
+        [
             {
                 "id": 1,
                 "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -36,18 +37,25 @@ class ReminderApp extends Component {
                 "notificationType": "email"
             }
         ]
+    );
+
+    function addReminder(message, datetime) {
+        const newReminder = {
+            id: "id",
+            message,
+            triggerDatetime: datetime,
+            "email": "test@gmail.com",
+            "notificationType": "email"
+        };
+        setReminders([...reminders, newReminder]);
     }
 
-    render() {
         return(
             <div className={classes.ReminderApp}>
                 <h1>Reminder App</h1>
-                <ReminderForm/>
+                <ReminderForm onAddReminder={addReminder}/>
                 <ReminderFilters/>
-                <RemindersList reminders={this.state.reminders}/>
+                <RemindersList reminders={reminders}/>
             </div>
         )
-    }
 }
-
-export default ReminderApp;
