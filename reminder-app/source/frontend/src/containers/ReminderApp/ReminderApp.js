@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {nanoid} from "nanoid";
 import ReminderForm from "../../components/ReminderForm/ReminderForm";
 import ReminderFilters from "../../components/ReminderFilters/ReminderFilters";
 import RemindersList from "../../components/ReminderList/RemindersList";
@@ -28,24 +29,17 @@ export default function ReminderApp() {
                 "triggerDatetime": "2022-10-30T20:25:00",
                 "email": "test@gmail.com",
                 "notificationType": "email"
-            },
-            {
-                "id": 4,
-                "message": "Praesent varius, mauris at sodales aliquam, lorem lectus eleifend enim, vitae blandit turpis purus et leo.",
-                "triggerDatetime": "2022-10-31T20:30:00",
-                "email": "test@gmail.com",
-                "notificationType": "email"
             }
         ]
     );
 
     function addReminder(message, datetime) {
         const newReminder = {
-            id: "id",
+            id: nanoid(),
             message,
             triggerDatetime: datetime,
-            "email": "test@gmail.com",
-            "notificationType": "email"
+            email: "test@gmail.com",
+            notificationType: "email"
         };
         setReminders([...reminders, newReminder]);
     }
