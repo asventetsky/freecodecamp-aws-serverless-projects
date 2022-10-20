@@ -6,9 +6,29 @@ table_name = "reminders"
 
 
 def handler(event, context):
-    email = event["queryStringParameters"]['email']
+    query_parameters = event["queryStringParameters"]
+    if not query_parameters:
+        return construct_error_response()
+
+    email = query_parameters['email']
     records = get_records(email)
     return construct_response(records)
+
+
+def construct_error_response():
+    response = {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": json.dumps(
+            {
+                "error": "Missing query parameter: email."
+            }
+        )
+    }
+    print(f"Response: {response}")
+    return response
 
 
 def get_records(email):
