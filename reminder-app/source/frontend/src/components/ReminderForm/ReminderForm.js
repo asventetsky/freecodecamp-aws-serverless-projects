@@ -34,7 +34,7 @@ export default function ReminderForm(props) {
                     </li>
                     <li className={classes.formRow}>
                         <label htmlFor="datetime">Datetime</label>
-                        <input type="text" id="datetime" onChange={handleDatetimeChange}/>
+                        <input type="datetime-local" id="datetime" onChange={handleDatetimeChange}/>
                     </li>
                     <li className={classes.formRow}>
                         <button type="submit">Add</button>
