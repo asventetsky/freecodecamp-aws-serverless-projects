@@ -19,7 +19,8 @@ def construct_error_response():
     response = {
         "statusCode": 200,
         "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
         },
         "body": json.dumps(
             {
@@ -64,7 +65,8 @@ def construct_response(records):
     response = {
         "statusCode": 200,
         "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
         },
         "body": json.dumps(records)
     }
