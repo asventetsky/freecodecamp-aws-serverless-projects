@@ -1,37 +1,36 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {nanoid} from "nanoid";
 import ReminderForm from "../../components/ReminderForm/ReminderForm";
 import ReminderFilters from "../../components/ReminderFilters/ReminderFilters";
 import RemindersList from "../../components/ReminderList/RemindersList";
 import classes from "./ReminderApp.module.css"
+import axios from "axios";
 
 export default function ReminderApp() {
 
-    const [reminders, setReminders] = useState(
-        [
-            {
-                "id": 1,
-                "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                "triggerDatetime": "2022-10-20T10:15:00",
-                "email": "test@gmail.com",
-                "notificationType": "email"
-            },
-            {
-                "id": 2,
-                "message": "Suspendisse mattis placerat suscipit.",
-                "triggerDatetime": "2022-10-25T15:20:00",
-                "email": "test@gmail.com",
-                "notificationType": "email"
-            },
-            {
-                "id": 3,
-                "message": "Praesent varius, mauris at sodales aliquam, lorem lectus eleifend enim, vitae blandit turpis purus et leo.",
-                "triggerDatetime": "2022-10-30T20:25:00",
-                "email": "test@gmail.com",
-                "notificationType": "email"
-            }
-        ]
-    );
+    const [reminders, setReminders] = useState([]);
+
+    useEffect(() => {
+        let reminders = []
+        axios.get(
+            "https:///mk5tkka5ee.execute-api.eu-central-1.amazonaws.com/dev/reminders?email=artyom.sven@gmail.com"
+        )
+            .then(response => {
+                    response.data.forEach(reminder =>
+                        reminders.push(
+                            {
+                                id: reminder.id,
+                                message: reminder.message,
+                                triggerDatetime: reminder.trigger_datetime,
+                                email: reminder.user_id,
+                                notificationType: reminder.notification_type
+                            }
+                        )
+                    );
+                    setReminders(reminders);
+            })
+            .catch(error => console.log(error))
+    }, [])
 
     function addReminder(message, datetime) {
         const newReminder = {
