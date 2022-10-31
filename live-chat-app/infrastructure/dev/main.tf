@@ -24,3 +24,7 @@ terraform {
 module "websocket_api_gateway" {
   source = "../modules/api_gateway"
 }
+
+module "dynamodb_table" {
+  source = "../modules/dynamodb"
+}
