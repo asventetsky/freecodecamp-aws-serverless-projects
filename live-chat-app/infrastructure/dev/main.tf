@@ -28,3 +28,9 @@ module "websocket_api_gateway" {
 module "dynamodb_table" {
   source = "../modules/dynamodb"
 }
+
+module "ecr" {
+  source = "../modules/ecr"
+
+  repository_name = "live-chat"
+}
