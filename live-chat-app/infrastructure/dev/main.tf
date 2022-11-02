@@ -34,3 +34,18 @@ module "ecr" {
 
   repository_name = "live-chat"
 }
+
+data "template_file" "lambda_connect" {
+  template = file("${var.lambda_live_chat_connect}_policy.json")
+
+  vars = {
+    dynamodb_table_arn = module.dynamodb_table.arn
+  }
+}
+
+module "lambda_connect_iam_role" {
+  source = "../modules/iam_lambda"
+
+  name = var.lambda_live_chat_connect
+  policy_json = data.template_file.lambda_connect.rendered
+}
