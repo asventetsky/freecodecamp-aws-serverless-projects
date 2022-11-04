@@ -22,7 +22,7 @@ data aws_ecr_image lambda_image {
   image_tag       = var.function_name
 }
 
-resource "aws_lambda_function" "lambda_reminder_create" {
+resource "aws_lambda_function" "lambda_function" {
   function_name = var.function_name
   role = var.iam_role_arn
 
@@ -30,8 +30,8 @@ resource "aws_lambda_function" "lambda_reminder_create" {
   image_uri = "${var.ecr_repository_url}@${data.aws_ecr_image.lambda_image.id}"
 }
 
-resource "aws_cloudwatch_log_group" "lambda_reminder_create" {
-  name = "/aws/lambda/${aws_lambda_function.lambda_reminder_create.function_name}"
+resource "aws_cloudwatch_log_group" "lambda_function" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
 
   retention_in_days = 1
 }

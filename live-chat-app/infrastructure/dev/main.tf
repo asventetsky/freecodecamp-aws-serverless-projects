@@ -21,10 +21,6 @@ terraform {
   }
 }
 
-module "websocket_api_gateway" {
-  source = "../modules/api_gateway"
-}
-
 module "dynamodb_table" {
   source = "../modules/dynamodb"
 }
@@ -61,4 +57,11 @@ module "lambda_connect" {
   ecr_repository_name = module.ecr.repository_name
   ecr_repository_url = module.ecr.repository_url
   iam_role_arn = module.lambda_connect_iam_role.arn
+}
+
+module "websocket_api_gateway" {
+  source = "../modules/api_gateway"
+
+  lambda_connect_invoke_arn = module.lambda_connect.invoke_arn
+  lambda_connect_name = module.lambda_connect.name
 }
