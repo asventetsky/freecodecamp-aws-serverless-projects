@@ -85,6 +85,10 @@ module "lambda_create_room" {
   ecr_repository_name = module.ecr.repository_name
   ecr_repository_url = module.ecr.repository_url
   iam_role_arn = module.lambda_connect_iam_role.arn
+
+  environment_variables = {
+    endpoint_url = module.websocket_api_gateway.url
+  }
 }
 
 module "websocket_api_gateway" {

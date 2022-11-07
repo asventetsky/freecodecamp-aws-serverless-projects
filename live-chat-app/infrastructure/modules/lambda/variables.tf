@@ -13,3 +13,7 @@ variable "ecr_repository_name" {}
 variable "ecr_repository_url" {}
 
 variable "iam_role_arn" {}
+
+variable "environment_variables" {
+  default = {}
+}

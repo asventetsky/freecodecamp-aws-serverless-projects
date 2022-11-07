@@ -1,3 +1,3 @@
 output "url" {
-  value = aws_apigatewayv2_api.live_chat.api_endpoint
+  value = aws_apigatewayv2_stage.live_chat_dev.invoke_url
 }
