@@ -4,62 +4,35 @@ resource "aws_apigatewayv2_api" "live_chat" {
   route_selection_expression = "$request.body.action"
 }
 
-resource "aws_apigatewayv2_route" "live_chat_connect" {
-  api_id    = aws_apigatewayv2_api.live_chat.id
+module "api_gateway_route_connect" {
+  source = "../api_gateway_route"
+
+  api_gateway_id = aws_apigatewayv2_api.live_chat.id
+  api_gateway_execution_arn = aws_apigatewayv2_api.live_chat.execution_arn
+
   route_key = "$connect"
 
-  target = "integrations/${aws_apigatewayv2_integration.live_chat_connect.id}"
+  lambda_invoke_arn = var.lambda_connect_invoke_arn
+  lambda_name = var.lambda_connect_name
+  
 }
 
-resource "aws_apigatewayv2_integration" "live_chat_connect" {
-  api_id           = aws_apigatewayv2_api.live_chat.id
-  integration_type = "AWS_PROXY"
+module "api_gateway_route_create_room" {
+  source = "../api_gateway_route"
 
-  content_handling_strategy = "CONVERT_TO_TEXT"
-  integration_method        = "POST"
-  integration_uri           = var.lambda_connect_invoke_arn
-  passthrough_behavior      = "WHEN_NO_MATCH"
-}
+  api_gateway_id = aws_apigatewayv2_api.live_chat.id
+  api_gateway_execution_arn = aws_apigatewayv2_api.live_chat.execution_arn
 
-resource "aws_lambda_permission" "lambda" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = var.lambda_connect_name
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_apigatewayv2_api.live_chat.execution_arn}/*/$connect"
-}
-
-resource "aws_apigatewayv2_route" "live_chat_create_room" {
-  api_id    = aws_apigatewayv2_api.live_chat.id
   route_key = "create_room"
 
-  target = "integrations/${aws_apigatewayv2_integration.live_chat_create_room.id}"
-}
-
-resource "aws_apigatewayv2_integration" "live_chat_create_room" {
-  api_id           = aws_apigatewayv2_api.live_chat.id
-  integration_type = "AWS_PROXY"
-
-  content_handling_strategy = "CONVERT_TO_TEXT"
-  integration_method        = "POST"
-  integration_uri           = var.lambda_create_room_invoke_arn
-  passthrough_behavior      = "WHEN_NO_MATCH"
-}
-
-resource "aws_lambda_permission" "lambda_create_room" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = var.lambda_create_room_name
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_apigatewayv2_api.live_chat.execution_arn}/*/create_room"
+  lambda_invoke_arn = var.lambda_create_room_invoke_arn
+  lambda_name = var.lambda_create_room_name
 }
 
 resource "aws_apigatewayv2_deployment" "live_chat" {
   depends_on = [
-    aws_apigatewayv2_route.live_chat_connect,
-    aws_apigatewayv2_route.live_chat_create_room
+    module.api_gateway_route_connect,
+    module.api_gateway_route_create_room
   ]
   api_id      = aws_apigatewayv2_api.live_chat.id
 
