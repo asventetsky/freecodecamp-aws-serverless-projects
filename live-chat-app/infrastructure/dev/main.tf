@@ -33,19 +33,14 @@ module "ecr" {
   repository_name = "live-chat"
 }
 
-data "template_file" "lambda_connect" {
-  template = file("${var.lambda_live_chat_connect}_policy.json")
-
-  vars = {
-    dynamodb_table_arn = module.dynamodb_table.arn
-  }
-}
-
 module "lambda_connect_iam_role" {
   source = "../modules/iam_lambda"
 
   name = var.lambda_live_chat_connect
-  policy_json = data.template_file.lambda_connect.rendered
+  policy_json_filename = "${var.lambda_live_chat_connect}_policy.json"
+  policy_json_variables = {
+    dynamodb_table_arn = module.dynamodb_table.arn
+  }
 }
 
 module "lambda_connect" {
@@ -65,20 +60,20 @@ module "lambda_connect" {
   }
 }
 
-data "template_file" "lambda_create_room" {
-  template = file("${var.lambda_live_chat_create_room}_policy.json")
-
-  vars = {
-    dynamodb_table_arn = module.dynamodb_table.arn
-    api_gateway_arn = join("", ["arn:aws:execute-api:", var.region, ":", data.aws_caller_identity.current.account_id, ":*/*/POST/@connections/*"])
-  }
-}
-
 module "lambda_create_room_iam_role" {
   source = "../modules/iam_lambda"
 
   name = var.lambda_live_chat_create_room
-  policy_json = data.template_file.lambda_create_room.rendered
+  policy_json_filename = "${var.lambda_live_chat_create_room}_policy.json"
+  policy_json_variables = {
+    dynamodb_table_arn = module.dynamodb_table.arn
+    api_gateway_arn = join("", [
+      "arn:aws:execute-api:",
+      var.region,
+      ":",
+      data.aws_caller_identity.current.account_id,
+      ":*/*/POST/@connections/*"])
+  }
 }
 
 module "lambda_create_room" {

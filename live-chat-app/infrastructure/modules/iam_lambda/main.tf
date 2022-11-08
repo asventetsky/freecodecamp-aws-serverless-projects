@@ -16,9 +16,14 @@ resource "aws_iam_role" "lambda" {
   })
 }
 
+data "template_file" "lambda" {
+  template = file(var.policy_json_filename)
+  vars = var.policy_json_variables
+}
+
 resource "aws_iam_policy" "lambda" {
   name = "${var.name}-policy"
-  policy = var.policy_json
+  policy = data.template_file.lambda.rendered
 }
 
 resource "aws_iam_role_policy_attachment" "lambda" {
