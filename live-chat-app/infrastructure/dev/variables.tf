@@ -9,3 +9,7 @@ variable "lambda_live_chat_connect" {
 variable "lambda_live_chat_create_room" {
   default = "lambda_live_chat_create_room"
 }
+
+variable "lambda_live_chat_join_room" {
+  default = "lambda_live_chat_join_room"
+}

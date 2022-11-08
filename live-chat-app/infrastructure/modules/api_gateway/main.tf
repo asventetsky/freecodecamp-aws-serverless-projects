@@ -29,10 +29,23 @@ module "api_gateway_route_create_room" {
   lambda_name = var.lambda_create_room_name
 }
 
+module "api_gateway_route_join_room" {
+  source = "../api_gateway_route"
+
+  api_gateway_id = aws_apigatewayv2_api.live_chat.id
+  api_gateway_execution_arn = aws_apigatewayv2_api.live_chat.execution_arn
+
+  route_key = "join_room"
+
+  lambda_invoke_arn = var.lambda_join_room_invoke_arn
+  lambda_name = var.lambda_join_room_name
+}
+
 resource "aws_apigatewayv2_deployment" "live_chat" {
   depends_on = [
     module.api_gateway_route_connect,
-    module.api_gateway_route_create_room
+    module.api_gateway_route_create_room,
+    module.api_gateway_route_join_room
   ]
   api_id      = aws_apigatewayv2_api.live_chat.id
 
