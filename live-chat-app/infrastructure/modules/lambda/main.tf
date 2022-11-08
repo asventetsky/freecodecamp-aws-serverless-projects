@@ -28,6 +28,10 @@ resource "aws_lambda_function" "lambda_function" {
 
   package_type = "Image"
   image_uri = "${var.ecr_repository_url}@${data.aws_ecr_image.lambda_image.id}"
+
+  environment {
+    variables = var.environment_variables
+  }
 }
 
 resource "aws_cloudwatch_log_group" "lambda_function" {

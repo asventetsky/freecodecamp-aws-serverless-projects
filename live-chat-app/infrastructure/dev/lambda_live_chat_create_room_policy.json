@@ -15,6 +15,13 @@
       ],
       "Effect" : "Allow",
       "Resource" : "${dynamodb_table_arn}"
+    },
+    {
+      "Action" : [
+        "execute-api:ManageConnections"
+      ],
+      "Effect" : "Allow",
+      "Resource" : "${api_gateway_arn}"
     }
   ]
 }

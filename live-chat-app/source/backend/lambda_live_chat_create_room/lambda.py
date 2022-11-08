@@ -1,27 +1,16 @@
 import boto3
 import uuid
-import os
+import json
 
 dynamodb_client = boto3.client('dynamodb')
 table_name = "live-chat"
-
-api_gateway_client = boto3.client('apigatewaymanagementapi',
-                                  os.environ["endpoint_url"]
-                                  )
-
-
-def send_room_id(room_id):
-    api_gateway_client.post_to_connection(
-        Data=json.dumps({"roomId": room_id}),
-        ConnectionId=connectionId
-    )
 
 
 def handler(event, context):
     connection_id = event['requestContext']['connectionId']
     room_id = generate_room_id()
     create_room(connection_id, room_id)
-    send_room_id(room_id)
+    send_room_id(event, connection_id, room_id)
     return construct_response()
 
 
@@ -35,13 +24,24 @@ def create_room(connection_id, room_id):
     dynamodb_client.put_item(
         TableName=table_name,
         Item={
-            'connection_id': {
+            'connectionId': {
                 'S': connection_id
             },
-            'room_id': {
+            'roomId': {
                 'S': room_id
             }
         }
+    )
+
+
+def send_room_id(event, connection_id, room_id):
+    api_gateway_client = boto3.client('apigatewaymanagementapi',
+                                      endpoint_url='https://' + event['requestContext']['domainName'] + '/' + event['requestContext']['stage']
+                                      )
+
+    api_gateway_client.post_to_connection(
+        Data=json.dumps({"roomId": room_id}),
+        ConnectionId=connection_id
     )
 
 

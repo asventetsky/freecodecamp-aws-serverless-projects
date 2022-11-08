@@ -21,6 +21,8 @@ terraform {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 module "dynamodb_table" {
   source = "../modules/dynamodb"
 }
@@ -57,6 +59,10 @@ module "lambda_connect" {
   ecr_repository_name = module.ecr.repository_name
   ecr_repository_url = module.ecr.repository_url
   iam_role_arn = module.lambda_connect_iam_role.arn
+
+  environment_variables = {
+    createdBy = "terraform"
+  }
 }
 
 data "template_file" "lambda_create_room" {
@@ -64,6 +70,7 @@ data "template_file" "lambda_create_room" {
 
   vars = {
     dynamodb_table_arn = module.dynamodb_table.arn
+    api_gateway_arn = join("", ["arn:aws:execute-api:", var.region, ":", data.aws_caller_identity.current.account_id, ":*/*/POST/@connections/*"])
   }
 }
 
@@ -84,10 +91,11 @@ module "lambda_create_room" {
   docker_file_path = "../../source/backend/${var.lambda_live_chat_create_room}/Dockerfile"
   ecr_repository_name = module.ecr.repository_name
   ecr_repository_url = module.ecr.repository_url
-  iam_role_arn = module.lambda_connect_iam_role.arn
+  iam_role_arn = module.lambda_create_room_iam_role.arn
 
   environment_variables = {
     endpoint_url = module.websocket_api_gateway.url
+    createdBy = "terraform"
   }
 }
 
