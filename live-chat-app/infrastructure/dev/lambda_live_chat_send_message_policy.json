@@ -1,0 +1,22 @@
+{
+  "Version" : "2012-10-17",
+  "Statement" : [
+    {
+      "Action" : [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Effect" : "Allow",
+      "Resource" : "arn:aws:logs:*:*:*"
+    },
+    {
+      "Action" : [
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:PutItem"
+      ],
+      "Effect" : "Allow",
+      "Resource" : "${dynamodb_table_arn}"
+    }
+  ]
+}

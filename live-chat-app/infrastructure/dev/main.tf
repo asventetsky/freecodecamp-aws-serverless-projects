@@ -121,6 +121,33 @@ module "lambda_join_room" {
   }
 }
 
+module "lambda_send_message_iam_role" {
+  source = "../modules/iam_lambda"
+
+  name = var.lambda_live_chat_send_message
+  policy_json_filename = "${var.lambda_live_chat_send_message}_policy.json"
+  policy_json_variables = {
+    dynamodb_table_arn = module.dynamodb_table.arn
+  }
+}
+
+module "lambda_send_message" {
+  source = "../modules/lambda"
+
+  region = var.region
+  function_name = var.lambda_live_chat_send_message
+  folder_path = "../../source/backend/${var.lambda_live_chat_send_message}"
+  python_file_path = "../../source/backend/${var.lambda_live_chat_send_message}/lambda.py"
+  docker_file_path = "../../source/backend/${var.lambda_live_chat_send_message}/Dockerfile"
+  ecr_repository_name = module.ecr.repository_name
+  ecr_repository_url = module.ecr.repository_url
+  iam_role_arn = module.lambda_send_message_iam_role.arn
+
+  environment_variables = {
+    createdBy = "terraform"
+  }
+}
+
 module "websocket_api_gateway" {
   source = "../modules/api_gateway"
 
@@ -132,4 +159,7 @@ module "websocket_api_gateway" {
 
   lambda_join_room_invoke_arn = module.lambda_join_room.invoke_arn
   lambda_join_room_name = module.lambda_join_room.name
+
+  lambda_send_message_invoke_arn = module.lambda_send_message.invoke_arn
+  lambda_send_message_name = module.lambda_send_message.name
 }
