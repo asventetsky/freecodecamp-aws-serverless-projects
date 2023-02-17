@@ -1,6 +1,9 @@
 import json
+import logging
 
 from api_composer.service import get_joke
+
+logging.getLogger().setLevel(logging.INFO)
 
 
 def lambda_handler(event, context):
@@ -28,6 +31,6 @@ def construct_response(joke1, joke2):
             'error': 'Internal server error'
         })
 
-    print(f"Response: {response}")
+    logging.info(f"Response: {response}")
 
     return response
