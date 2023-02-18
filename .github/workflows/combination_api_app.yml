@@ -1,0 +1,19 @@
+name: Deploy Combination API app
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "🔍 run tests"
+        uses: actions/setup-python@v4
+          with:
+            python-version: '3.9'
+        run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
