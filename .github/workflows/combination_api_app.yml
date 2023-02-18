@@ -14,6 +14,6 @@ jobs:
 
       - name: "🔍 run tests"
         uses: actions/setup-python@v4
-          with:
+        with:
             python-version: '3.9'
         run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
