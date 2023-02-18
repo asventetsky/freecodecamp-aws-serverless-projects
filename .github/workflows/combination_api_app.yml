@@ -12,8 +12,10 @@ jobs:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v2
 
-      - name: "🔍 run tests"
+      - name: "🔧 install python 3.9"
         uses: actions/setup-python@v4
         with:
             python-version: '3.9'
+
+      - name: "🔍 run tests"
         run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
