@@ -1,18 +1,26 @@
+# pylint: disable=unused-argument
+
+""" Application logic """
+
 import json
 import logging
 
-from api_composer.service import get_joke
+from api_composer.service import fetch_joke
 
 logging.getLogger().setLevel(logging.INFO)
 
 
 def lambda_handler(event, context):
-    joke1 = get_joke()
-    joke2 = get_joke()
+    """ Contains major logic for combining requests from multiple resources """
+
+    joke1 = fetch_joke()
+    joke2 = fetch_joke()
     return construct_response(joke1, joke2)
 
 
 def construct_response(joke1, joke2):
+    """ Constructs final response """
+
     response = {
         'headers': {
             'Content-Type': 'application/json'
@@ -31,6 +39,6 @@ def construct_response(joke1, joke2):
             'error': 'Internal server error'
         })
 
-    logging.info(f"Response: {response}")
+    logging.info('Response: %s', response)
 
     return response
