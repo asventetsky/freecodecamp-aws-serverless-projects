@@ -20,6 +20,9 @@ jobs:
       - name: "🔧 install pylint"
         run: pip install pylint
 
+      - name: "📦 install dependencies"
+        run: cd combination-api-app/source && pip install -r requirements.txt
+
       - name: "🔍 lint code"
         run: cd combination-api-app/source && find . -type f -name "*.py" | xargs pylint
 
