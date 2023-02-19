@@ -25,6 +25,7 @@ jobs:
 
   test:
     name: Test application
+    needs: lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
