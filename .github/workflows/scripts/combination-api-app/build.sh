@@ -1,7 +1,7 @@
 #!/bin/bash
 
 main() {
-  cd source || exit
+  cd combination-api-app/source || exit
 
   echo "Creating directory for artifact."
   mkdir target
