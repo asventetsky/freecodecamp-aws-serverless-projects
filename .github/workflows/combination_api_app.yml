@@ -42,3 +42,23 @@ jobs:
 
       - name: "🔍 run tests"
         run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
+
+  build:
+    name: Build application
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "📦 install dependencies"
+        run: cd combination-api-app/source && pip install -r requirements.txt
+
+      - name: "🔍 run build"
+        run: cd .github/workflows/scripts/combination-api-app && chmod +x ./build.sh && ./build.sh
