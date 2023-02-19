@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Test application
+  lint:
+    name: Code standards
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -17,7 +17,27 @@ jobs:
         with:
             python-version: '3.9'
 
-      - name: "🔧 install dependencies"
+      - name: "🔧 install pylint"
+        run: pip install pylint
+
+      - name: "🔍 lint code"
+        run: cd combination-api-app/source && find . -type f -name "*.py" | xargs pylint
+
+  test:
+    name: Test application
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+            python-version: '3.9'
+
+      - name: "📦 install dependencies"
         run: cd combination-api-app/source && pip install -r requirements.txt
 
       - name: "🔍 run tests"
