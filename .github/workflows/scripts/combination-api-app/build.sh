@@ -3,7 +3,7 @@
 main() {
   cd combination-api-app/source || exit
 
-  echo "Creating directory for artifact."
+  echo "Creating a directory for artifact."
   mkdir target
 
   echo "Installing dependencies."
@@ -12,14 +12,20 @@ main() {
   pip install -r requirements.txt
   deactivate
 
-  echo "Creating package with dependencies."
-  cd venv/lib/python3.9/site-packages/ || exit
-  zip -q -r ../../../../target/lambda_combination.zip .
-  cd ../../../../
+  echo "Creating a package with dependencies."
+  {
+    cd venv/lib/python3.9/site-packages/ || exit
+    zip -q -r ../../../../target/lambda_api_combiner.zip .
+  }
 
   echo "Adding source code to the package."
-  cd api_composer || exit
-  zip -q -g ../target/lambda_artifact.zip composer.py service.py constants.py
+  {
+    cd api_composer || exit
+    zip -q -g ../target/lambda_api_combiner.zip composer.py service.py constants.py
+  }
+
+  echo "Created artifact."
+  less target/
 }
 
 main "$@"; exit
