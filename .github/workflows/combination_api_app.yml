@@ -48,7 +48,7 @@ jobs:
 
   build:
     name: Build application
-    needs: [lint, test]
+    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -64,4 +64,4 @@ jobs:
         run: cd combination-api-app/source && pip install -r requirements.txt
 
       - name: "🔍 run build"
-        run: cd .github/workflows/scripts/combination-api-app && chmod +x ./build.sh && ./build.sh
+        run: chmod +x .github/workflows/scripts/combination-api-app/build.sh && .github/workflows/scripts/combination-api-app/build.sh
