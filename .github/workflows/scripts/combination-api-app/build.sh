@@ -25,7 +25,7 @@ main() {
   )
 
   echo "Created artifact."
-  less target/
+  less target/lambda_api_combiner.zip
 }
 
 main "$@"; exit
