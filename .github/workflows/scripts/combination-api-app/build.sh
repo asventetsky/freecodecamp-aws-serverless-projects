@@ -13,16 +13,16 @@ main() {
   deactivate
 
   echo "Creating a package with dependencies."
-  {
+  (
     cd venv/lib/python3.9/site-packages/ || exit
     zip -q -r ../../../../target/lambda_api_combiner.zip .
-  }
+  )
 
   echo "Adding source code to the package."
-  {
+  (
     cd api_composer || exit
     zip -q -g ../target/lambda_api_combiner.zip composer.py service.py constants.py
-  }
+  )
 
   echo "Created artifact."
   less target/
