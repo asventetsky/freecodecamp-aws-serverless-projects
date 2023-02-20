@@ -6,8 +6,14 @@ main() {
   echo "Creating directory for artifact."
   mkdir target
 
+  echo "Installing dependencies."
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
+  deactivate
+
   echo "Creating package with dependencies."
-  cd venv/lib/python3.10/site-packages/ || exit
+  cd venv/lib/python3.9/site-packages/ || exit
   zip -q -r ../../../../target/lambda_combination.zip .
   cd ../../../../
 
