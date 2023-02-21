@@ -1,12 +1,12 @@
 module "iam" {
-  source = "../iam"
+  source = "../../../../../_modules/iam"
 
   lambda_name = var.lambda_name
   resource_tags = var.resource_tags
 }
 
 module "lambda" {
-  source = "../lambda_zip_archive"
+  source = "../../../../../_modules/lambda_zip_archive"
 
   resource_tags = var.resource_tags
   lambda_name = var.lambda_name

@@ -3,9 +3,7 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
 provider "aws" {
-  assume_role {
-    role_arn = "arn:aws:iam::0123456789:role/terragrunt"
-  }
+  region = "eu-central-1"
 }
 EOF
 }
@@ -14,8 +12,8 @@ locals {
   # Parse the file path we're in to read the env name: e.g., env
   # will be "dev" in the dev folder, "stage" in the stage folder,
   # etc.
-  parsed = regex(".*/environments/(?P<env>.*?)/.*", get_terragrunt_dir())
-  env    = local.parsed.env
+//  parsed = regex(".*/(?P<env>.*?)/.*", get_terragrunt_dir())
+  env    = "dev"
   app_name = "combination-api-app"
 }
 
@@ -24,7 +22,7 @@ remote_state {
   config = {
     bucket = "freecodecamp-aws-serverless-projects-tf-state-${local.env}"
     region = "us-east-2"
-    key    = "${locals.app_name}/terraform.tfstate"
+    key    = "${local.app_name}/terraform.tfstate"
     encrypt = true
   }
   generate = {
@@ -34,14 +32,14 @@ remote_state {
 }
 
 terraform {
-  source = "../_modules/root"
+  source = "${get_parent_terragrunt_dir()}/../_modules/root///"
 }
 
 inputs = {
   lambda_name = "lambda-api-combiner"
   resource_tags = {
-    Application = "${locals.app_name}"
-    Environment = "${locals.env}"
+    Application = "${local.app_name}",
+    Environment = "${local.env}",
     CreatedBy = "Terraform"
   }
 }

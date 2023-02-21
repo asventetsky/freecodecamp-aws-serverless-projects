@@ -66,14 +66,16 @@ jobs:
       - name: "🔍 run build"
         run: chmod +x .github/workflows/scripts/combination-api-app/build.sh && .github/workflows/scripts/combination-api-app/build.sh
 
-      - name: "💾 save archive"
+      - name: "💾 save artifact"
         uses: actions/upload-artifact@v2
         with:
           name: lambda-api-combiner-zip
           path: combination-api-app/source/target/lambda-api-combiner.zip
+          retention-days: 2
 
   deploy-dev:
     name: Deploy application to DEV
+    environment: dev
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -89,10 +91,13 @@ jobs:
       - name: "🔧 install terragrunt 0.43.2"
         run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
 
-      - name: "💾 fetch archive"
+      - name: "💾 fetch artifact"
         uses: actions/download-artifact@v2
         with:
           name: lambda-api-combiner-zip
+
+      - name: "check artifacts preserved"
+        run: ls -l combination-api-app/source/target/lambda-api-combiner.zip
 
       - name: "🔍 run build"
         run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt plan
