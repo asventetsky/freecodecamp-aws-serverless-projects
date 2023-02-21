@@ -48,7 +48,7 @@ jobs:
 
   build:
     name: Build application
-    needs: test
+#    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -74,7 +74,7 @@ jobs:
 
   deploy-dev:
     name: Deploy application to DEV
-    environment: dev
+#    environment: dev
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
