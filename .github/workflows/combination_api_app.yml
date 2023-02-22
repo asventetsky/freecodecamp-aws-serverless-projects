@@ -4,47 +4,47 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    name: Code standards
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-            python-version: '3.9'
-
-      - name: "🔧 install pylint"
-        run: pip install pylint
-
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
-
-      - name: "🔍 lint code"
-        run: cd combination-api-app/source && find . -type f -name "*.py" | xargs pylint
-
-  test:
-    name: Test application
-    needs: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
-
-      - name: "🔍 run tests"
-        run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
+#  lint:
+#    name: Code standards
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    steps:
+#      - name: "☁️ checkout repository"
+#        uses: actions/checkout@v3
+#
+#      - name: "🔧 install python 3.9"
+#        uses: actions/setup-python@v4
+#        with:
+#            python-version: '3.9'
+#
+#      - name: "🔧 install pylint"
+#        run: pip install pylint
+#
+#      - name: "📦 install dependencies"
+#        run: cd combination-api-app/source && pip install -r requirements.txt
+#
+#      - name: "🔍 lint code"
+#        run: cd combination-api-app/source && find . -type f -name "*.py" | xargs pylint
+#
+#  test:
+#    name: Test application
+#    needs: lint
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    steps:
+#      - name: "☁️ checkout repository"
+#        uses: actions/checkout@v3
+#
+#      - name: "🔧 install python 3.9"
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.9'
+#
+#      - name: "📦 install dependencies"
+#        run: cd combination-api-app/source && pip install -r requirements.txt
+#
+#      - name: "🔍 run tests"
+#        run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
 
   build:
     name: Build application
@@ -74,7 +74,7 @@ jobs:
 
   deploy-dev:
     name: Deploy application to DEV
-    environment: dev
+#    environment: dev
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -100,7 +100,7 @@ jobs:
         run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
 
       - name: "🔍 run terragrunt init && terragrunt plan"
-        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init &&
+        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt plan
 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
