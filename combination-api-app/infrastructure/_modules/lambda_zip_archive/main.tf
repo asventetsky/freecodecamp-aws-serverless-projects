@@ -1,10 +1,10 @@
 resource "aws_lambda_function" "api_combiner" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
-  filename      = "${path.module}../../../../../../source/target/${var.lambda_name}.zip"
+  filename      = "${path.module}/../../../source/target/${var.lambda_name}.zip"
   function_name = var.lambda_name
   role          = var.lambda_role_arn
-  source_code_hash = filebase64sha256("${path.module}../../../../../../source/target/${var.lambda_name}.zip")
+  source_code_hash = filebase64sha256("${path.module}/../../../source/target/${var.lambda_name}.zip")
   handler = "composer.lambda_handler"
   runtime = "python3.9"
 
