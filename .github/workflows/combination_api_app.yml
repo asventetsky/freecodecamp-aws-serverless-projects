@@ -99,8 +99,8 @@ jobs:
       - name: "🔧 install terragrunt 0.43.2"
         run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
 
-      - name: "🔍 run terragrunt init && terragrunt plan"
-        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt plan
+      - name: "🔍 run terragrunt stuff"
+        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
