@@ -15,17 +15,17 @@ main() {
   echo "Creating a package with dependencies."
   (
     cd venv/lib/python3.9/site-packages/ || exit
-    zip -q -r ../../../../target/lambda_api_combiner.zip .
+    zip -q -r ../../../../target/lambda-api-combiner.zip .
   )
 
   echo "Adding source code to the package."
   (
     cd api_composer || exit
-    zip -q -g ../target/lambda_api_combiner.zip composer.py service.py constants.py
+    zip -q -g ../target/lambda-api-combiner.zip composer.py service.py constants.py
   )
 
   echo "Created artifact."
-  unzip -l target/lambda_api_combiner.zip
+  unzip -l target/lambda-api-combiner.zip
 }
 
 main "$@"; exit

@@ -38,7 +38,7 @@ jobs:
       - name: "🔧 install python 3.9"
         uses: actions/setup-python@v4
         with:
-            python-version: '3.9'
+          python-version: '3.9'
 
       - name: "📦 install dependencies"
         run: cd combination-api-app/source && pip install -r requirements.txt
@@ -65,3 +65,43 @@ jobs:
 
       - name: "🔍 run build"
         run: chmod +x .github/workflows/scripts/combination-api-app/build.sh && .github/workflows/scripts/combination-api-app/build.sh
+
+      - name: "💾 save lambda artifact"
+        uses: actions/cache@v3
+        with:
+          key: lambda-api-combiner
+          path: ./combination-api-app/source/target/lambda-api-combiner.zip
+
+  deploy-dev:
+    name: Deploy application to DEV
+    environment: dev
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "💾 fetch lambda artifact"
+        uses: actions/cache@v3
+        with:
+          key: lambda-api-combiner
+          path: ./combination-api-app/source/target/lambda-api-combiner.zip
+
+      - name: "check artifact preserved"
+        run: ls -l combination-api-app/source/target/lambda-api-combiner.zip
+
+      - name: "🔧 install terraform 1.3.8"
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.8
+
+      - name: "🔧 install terragrunt 0.43.2"
+        run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
+
+      - name: "🔍 run terragrunt stuff"
+        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
+
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
