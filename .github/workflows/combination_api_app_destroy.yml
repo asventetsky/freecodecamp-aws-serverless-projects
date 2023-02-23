@@ -1,6 +1,9 @@
 name: Destroy Combination API app
 
 on:
+  push:
+    branches:
+      - "combination-api-app-destroy-job"
   workflow_dispatch:
 
 jobs:
