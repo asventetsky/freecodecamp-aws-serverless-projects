@@ -37,6 +37,7 @@ terraform {
 
 inputs = {
   lambda_name = "lambda-api-combiner"
+  env = "${local.env}"
   resource_tags = {
     Application = "${local.app_name}",
     Environment = "${local.env}",
