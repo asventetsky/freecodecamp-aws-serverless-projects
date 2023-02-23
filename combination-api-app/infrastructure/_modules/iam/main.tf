@@ -38,7 +38,7 @@ resource "aws_iam_policy" "lambda_api_combiner" {
   tags = var.resource_tags
 }
 
-resource "aws_iam_role_policy_attachment" "api_composer_lambda" {
+resource "aws_iam_role_policy_attachment" "lambda_api_combiner" {
   role = aws_iam_role.lambda_api_combiner.name
   policy_arn = aws_iam_policy.lambda_api_combiner.arn
 }
