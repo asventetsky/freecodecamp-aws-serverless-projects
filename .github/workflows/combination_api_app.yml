@@ -63,23 +63,25 @@ jobs:
       - name: "📦 install dependencies"
         run: cd combination-api-app/source && pip install -r requirements.txt
 
-      - name: "🔧 create and set lambda artifact name"
-        id: lambda-artifact-name
+      - name: "🔧 construct lambda artifact name"
+        id: construct-lambda-artifact-name
         run: |
             GITHUB_BUILD_NUMBER=${{github.run_number}}
             LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
-            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+            echo "name=${LAMBDA_ARTIFACT_NAME}" >> $GITHUB_OUTPUT
 
       - name: "🔍 run build"
         run: |
             chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
-            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
+            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.construct-lambda-artifact-name.outputs.name }}
 
       - name: "💾 save lambda artifact"
         uses: actions/cache@v3
         with:
           key: lambda-api-combiner
           path: ./combination-api-app/source/target/${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
+    outputs:
+      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
 
   deploy-dev:
     name: Deploy application to DEV
@@ -88,6 +90,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+        LAMBDA_ARTIFACT_NAME: ${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
+
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
 
@@ -95,10 +103,10 @@ jobs:
         uses: actions/cache@v3
         with:
           key: lambda-api-combiner
-          path: ./combination-api-app/source/target/${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
+          path: ./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}
 
       - name: "check artifact preserved"
-        run: ls -l combination-api-app/source/target/${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
+        run: ls -l combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}
 
       - name: "🔧 install terraform 1.3.8"
         uses: hashicorp/setup-terraform@v2
@@ -110,12 +118,8 @@ jobs:
 
       - name: "📦 prepare common_vars file for terragrunt"
         run: |
-            echo "lambda_artifact_name=${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}"
-            echo "lambda_artifact_name=${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}" >> combination-api-app/infrastructure/environments/common_vars.yaml
+            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}"
+            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}" >> combination-api-app/infrastructure/environments/common_vars.yaml
 
       - name: "🔍 run terragrunt init and terragrunt apply"
         run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
-
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
