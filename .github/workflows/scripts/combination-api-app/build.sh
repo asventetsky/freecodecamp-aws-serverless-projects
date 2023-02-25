@@ -27,7 +27,7 @@ main() {
   )
 
   echo "Created artifact."
-  unzip -l target/"${LAMBDA_ARTIFACT_NAME}"
+  ls -l target/"${LAMBDA_ARTIFACT_NAME}"
 }
 
 main "$@"; exit

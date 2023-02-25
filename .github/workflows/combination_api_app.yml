@@ -63,22 +63,23 @@ jobs:
       - name: "📦 install dependencies"
         run: cd combination-api-app/source && pip install -r requirements.txt
 
-      - name: "🔧 create lambda artifact name"
+      - name: "🔧 create and set lambda artifact name"
+        id: lambda-artifact-name
         run: |
             GITHUB_BUILD_NUMBER=${{github.run_number}}
             LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
-            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}" >> $GITHUB_ENV
+            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}" >> $GITHUB_OUTPUT
 
       - name: "🔍 run build"
         run: |
             chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
-            .github/workflows/scripts/combination-api-app/build.sh ${{ env.lambda_artifact_name }}
+            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
 
       - name: "💾 save lambda artifact"
         uses: actions/cache@v3
         with:
           key: lambda-api-combiner
-          path: ./combination-api-app/source/target/lambda-api-combiner.zip
+          path: ./combination-api-app/source/target/${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
 
   deploy-dev:
     name: Deploy application to DEV
@@ -94,10 +95,10 @@ jobs:
         uses: actions/cache@v3
         with:
           key: lambda-api-combiner
-          path: ./combination-api-app/source/target/lambda-api-combiner.zip
+          path: ./combination-api-app/source/target/${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
 
       - name: "check artifact preserved"
-        run: ls -l combination-api-app/source/target/lambda-api-combiner.zip
+        run: ls -l combination-api-app/source/target/${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
 
       - name: "🔧 install terraform 1.3.8"
         uses: hashicorp/setup-terraform@v2
@@ -109,8 +110,8 @@ jobs:
 
       - name: "📦 prepare common_vars file for terragrunt"
         run: |
-            echo "lambda_artifact_name=${{ env.lambda_artifact_name }}"
-            echo "lambda_artifact_name=${{ env.lambda_artifact_name }}" >> combination-api-app/infrastructure/environments/common_vars.yaml
+            echo "lambda_artifact_name=${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}"
+            echo "lambda_artifact_name=${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}" >> combination-api-app/infrastructure/environments/common_vars.yaml
 
       - name: "🔍 run terragrunt init and terragrunt apply"
         run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
