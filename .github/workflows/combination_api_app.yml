@@ -89,12 +89,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+      LAMBDA_ARTIFACT_NAME: ${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
     steps:
-
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
-        LAMBDA_ARTIFACT_NAME: ${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
 
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
