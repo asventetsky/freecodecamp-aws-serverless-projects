@@ -122,4 +122,4 @@ jobs:
             cat ./combination-api-app/infrastructure/environments/common_vars.yaml
 
       - name: "🔍 run terragrunt init and terragrunt apply"
-        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
+        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init --terragrunt-non-interactive && terragrunt apply -auto-approve
