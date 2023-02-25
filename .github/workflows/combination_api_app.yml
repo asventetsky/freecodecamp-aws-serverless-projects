@@ -103,7 +103,7 @@ jobs:
         uses: actions/cache@v3
         with:
           key: lambda-api-combiner-${{ github.run_number }}
-          path: ./combination-api-app/source/target/${{ LAMBDA_ARTIFACT_NAME }}
+          path: ./combination-api-app/source/target/${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
           fail-on-cache-miss: true
 
       - name: "🔧 install terraform 1.3.8"
