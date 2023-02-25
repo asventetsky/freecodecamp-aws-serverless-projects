@@ -118,7 +118,7 @@ jobs:
 
       - name: "📦 prepare common_vars file for terragrunt"
         run: |
-            (echo ""; echo 'lambda_artifact_name: "${LAMBDA_ARTIFACT_NAME}"') >> ./combination-api-app/infrastructure/environments/common_vars.yaml
+            (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./combination-api-app/infrastructure/environments/common_vars.yaml
             cat ./combination-api-app/infrastructure/environments/common_vars.yaml
 
       - name: "🔍 run terragrunt init and terragrunt apply"
