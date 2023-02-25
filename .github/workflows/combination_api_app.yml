@@ -66,9 +66,9 @@ jobs:
       - name: "🔧 construct lambda artifact name"
         id: construct-lambda-artifact-name
         run: |
-            GITHUB_BUILD_NUMBER=${{github.run_number}}
+            GITHUB_BUILD_NUMBER=${{ github.run_number }}
             LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
-            echo "name=${LAMBDA_ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+            echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
 
       - name: "🔍 run build"
         run: |
@@ -78,7 +78,7 @@ jobs:
       - name: "💾 save lambda artifact"
         uses: actions/cache@v3
         with:
-          key: lambda-api-combiner
+          key: lambda-api-combiner-${{ github.run_number }}
           path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
 
     outputs:
@@ -102,7 +102,7 @@ jobs:
       - name: "💾 fetch lambda artifact"
         uses: actions/cache@v3
         with:
-          key: lambda-api-combiner
+          key: lambda-api-combiner-${{ github.run_number }}
           path: ./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}
 
 #      - name: "check artifact preserved"
@@ -119,7 +119,8 @@ jobs:
       - name: "📦 prepare common_vars file for terragrunt"
         run: |
             echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}"
-            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}" >> combination-api-app/infrastructure/environments/common_vars.yaml
+            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}" >> ./combination-api-app/infrastructure/environments/common_vars.yaml
+            cat ./combination-api-app/infrastructure/environments/common_vars.yaml
 
       - name: "🔍 run terragrunt init and terragrunt apply"
         run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
