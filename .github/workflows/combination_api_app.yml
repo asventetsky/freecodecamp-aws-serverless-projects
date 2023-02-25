@@ -86,7 +86,7 @@ jobs:
 
   deploy-dev:
     name: Deploy application to DEV
-    environment: dev
+#    environment: dev
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
