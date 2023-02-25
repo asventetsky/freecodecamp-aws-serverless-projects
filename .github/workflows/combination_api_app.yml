@@ -63,14 +63,26 @@ jobs:
       - name: "📦 install dependencies"
         run: cd combination-api-app/source && pip install -r requirements.txt
 
+      - name: "🔧 construct lambda artifact name"
+        id: construct-lambda-artifact-name
+        run: |
+            GITHUB_BUILD_NUMBER=${{ github.run_number }}
+            LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
+            echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
+
       - name: "🔍 run build"
-        run: chmod +x .github/workflows/scripts/combination-api-app/build.sh && .github/workflows/scripts/combination-api-app/build.sh
+        run: |
+            chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
+            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.construct-lambda-artifact-name.outputs.name }}
 
       - name: "💾 save lambda artifact"
         uses: actions/cache@v3
         with:
-          key: lambda-api-combiner
-          path: ./combination-api-app/source/target/lambda-api-combiner.zip
+          key: lambda-api-combiner-${{ github.run_number }}
+          path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
+
+    outputs:
+      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
 
   deploy-dev:
     name: Deploy application to DEV
@@ -78,18 +90,22 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+      LAMBDA_ARTIFACT_NAME: ${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
     steps:
+
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
 
       - name: "💾 fetch lambda artifact"
         uses: actions/cache@v3
         with:
-          key: lambda-api-combiner
-          path: ./combination-api-app/source/target/lambda-api-combiner.zip
-
-      - name: "check artifact preserved"
-        run: ls -l combination-api-app/source/target/lambda-api-combiner.zip
+          key: lambda-api-combiner-${{ github.run_number }}
+          # somehow `./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}` doesn't work
+          path: ./combination-api-app/source/target/${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
+          fail-on-cache-miss: true
 
       - name: "🔧 install terraform 1.3.8"
         uses: hashicorp/setup-terraform@v2
@@ -99,9 +115,10 @@ jobs:
       - name: "🔧 install terragrunt 0.43.2"
         run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
 
-      - name: "🔍 run terragrunt stuff"
-        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
+      - name: "📦 prepare common_vars file for terragrunt"
+        run: |
+            (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./combination-api-app/infrastructure/environments/common_vars.yaml
+            cat ./combination-api-app/infrastructure/environments/common_vars.yaml
 
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+      - name: "🔍 run terragrunt init and terragrunt apply"
+        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init --terragrunt-non-interactive && terragrunt apply -auto-approve

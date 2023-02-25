@@ -1,12 +1,12 @@
 resource "aws_apigatewayv2_api" "api_combiner" {
-  name          = "api-combiner-gw"
+  name          = "gw-${var.app_name}-${var.region}-${var.env}"
   protocol_type = "HTTP"
 }
 
 resource "aws_apigatewayv2_stage" "api_combiner" {
   api_id = aws_apigatewayv2_api.api_combiner.id
 
-  name        = "api-combiner-${var.env}"
+  name        = "${var.app_name}-${var.region}-${var.env}"
   auto_deploy = true
 
 //  access_log_settings {
@@ -39,7 +39,7 @@ resource "aws_apigatewayv2_integration" "api_combiner" {
 resource "aws_apigatewayv2_route" "api_combiner" {
   api_id = aws_apigatewayv2_api.api_combiner.id
 
-  route_key = "GET /jokes"
+  route_key = "GET ${var.path}"
   target    = "integrations/${aws_apigatewayv2_integration.api_combiner.id}"
 }
 

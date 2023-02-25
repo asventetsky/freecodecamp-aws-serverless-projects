@@ -1,0 +1,3 @@
+# `lambda_artifact_name` should be appended during the deployment
+app_name: "combination-api-app"
+s3_bucket_prefix: "freecodecamp-aws-serverless-projects-tf-state"

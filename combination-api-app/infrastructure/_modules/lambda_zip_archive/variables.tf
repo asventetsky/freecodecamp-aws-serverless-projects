@@ -1,4 +1,10 @@
-variable "lambda_name" {}
+variable "region" {}
+
+variable "env" {}
+
+variable "app_name" {}
+
+variable "lambda_artifact_name" {}
 
 variable "lambda_role_arn" {}
 
