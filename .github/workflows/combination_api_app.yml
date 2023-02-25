@@ -63,8 +63,16 @@ jobs:
       - name: "📦 install dependencies"
         run: cd combination-api-app/source && pip install -r requirements.txt
 
+      - name: "🔧 create lambda artifact name"
+        run: |
+            GITHUB_BUILD_NUMBER=${{github.run_number}}
+            LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
+            echo "lambda_artifact_name=${LAMBDA_ARTIFACT_NAME}" >> $GITHUB_ENV
+
       - name: "🔍 run build"
-        run: chmod +x .github/workflows/scripts/combination-api-app/build.sh && .github/workflows/scripts/combination-api-app/build.sh
+        run: |
+            chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
+            .github/workflows/scripts/combination-api-app/build.sh ${{ env.lambda_artifact_name }}
 
       - name: "💾 save lambda artifact"
         uses: actions/cache@v3
@@ -99,7 +107,12 @@ jobs:
       - name: "🔧 install terragrunt 0.43.2"
         run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
 
-      - name: "🔍 run terragrunt stuff"
+      - name: "📦 prepare common_vars file for terragrunt"
+        run: |
+            echo "lambda_artifact_name=${{ env.lambda_artifact_name }}"
+            echo "lambda_artifact_name=${{ env.lambda_artifact_name }}" >> combination-api-app/infrastructure/environments/common_vars.yaml
+
+      - name: "🔍 run terragrunt init and terragrunt apply"
         run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt apply -auto-approve
 
         env:

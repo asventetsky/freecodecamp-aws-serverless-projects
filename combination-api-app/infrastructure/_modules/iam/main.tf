@@ -1,5 +1,5 @@
 resource "aws_iam_role" "lambda_api_combiner" {
-  name = var.lambda_name
+  name = "${var.app_name}-${var.region}-${var.env}"
 
 
   assume_role_policy = jsonencode({
@@ -20,7 +20,7 @@ resource "aws_iam_role" "lambda_api_combiner" {
 }
 
 resource "aws_iam_policy" "lambda_api_combiner" {
-  name = var.lambda_name
+  name = "${var.app_name}-${var.region}-${var.env}"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [

@@ -1,6 +1,10 @@
+variable "region" {}
+
 variable "env" {}
 
-variable "lambda_name" {}
+variable "app_name" {}
+
+variable "lambda_artifact_name" {}
 
 variable "resource_tags" {
   type = map(string)
