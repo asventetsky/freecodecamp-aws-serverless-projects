@@ -103,6 +103,7 @@ jobs:
         uses: actions/cache@v3
         with:
           key: lambda-api-combiner-${{ github.run_number }}
+          # somehow `./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}` doesn't work
           path: ./combination-api-app/source/target/${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
           fail-on-cache-miss: true
 
