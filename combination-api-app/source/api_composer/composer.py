@@ -5,7 +5,7 @@
 import json
 import logging
 
-from api_composer.service import fetch_joke
+from service import fetch_joke
 
 logging.getLogger().setLevel(logging.INFO)
 

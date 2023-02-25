@@ -5,7 +5,7 @@
 import logging
 import requests
 
-from api_composer.constants import URL, TIMEOUT
+from constants import URL, TIMEOUT
 
 logging.getLogger().setLevel(logging.INFO)
 
