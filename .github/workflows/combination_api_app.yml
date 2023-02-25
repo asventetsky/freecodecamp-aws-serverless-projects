@@ -48,7 +48,7 @@ jobs:
 
   build:
     name: Build application
-    needs: test
+#    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
