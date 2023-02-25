@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache@v3
         with:
           key: lambda-api-combiner
-          path: ./combination-api-app/source/target/${{ steps.lambda-artifact-name.outputs.lambda_artifact_name }}
+          path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
     outputs:
       LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
 
