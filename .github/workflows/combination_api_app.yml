@@ -80,6 +80,7 @@ jobs:
         with:
           key: lambda-api-combiner
           path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
+
     outputs:
       LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
 
@@ -105,7 +106,7 @@ jobs:
           path: ./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}
 
       - name: "check artifact preserved"
-        run: ls -l combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}
+        run: ls -l ./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}
 
       - name: "🔧 install terraform 1.3.8"
         uses: hashicorp/setup-terraform@v2
