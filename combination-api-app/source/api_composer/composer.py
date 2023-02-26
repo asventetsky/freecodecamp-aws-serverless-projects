@@ -1,5 +1,4 @@
 # pylint: disable=unused-argument
-# pylint: disable=no-member
 
 """ Application logic """
 
@@ -50,7 +49,11 @@ def construct_response(joke1, joke2):
 def fetch_joke():
     """ Get joke from remote resource """
     response = fetch_response()
-    return extract_joke(response) if response.status_code != requests.codes.ok else None
+    if response.status_code != 200:
+        logging.error('Non 200 status received: %s', response)
+        return None
+
+    return extract_joke(response)
 
 
 def fetch_response():
