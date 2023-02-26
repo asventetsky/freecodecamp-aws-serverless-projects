@@ -1,13 +1,16 @@
 # pylint: disable=unused-argument
+# pylint: disable=no-member
 
 """ Application logic """
 
 import json
 import logging
-
-from service import fetch_joke
+import requests
 
 logging.getLogger().setLevel(logging.INFO)
+
+URL = 'https://icanhazdadjoke.com/'
+TIMEOUT = 5
 
 
 def lambda_handler(event, context):
@@ -42,3 +45,29 @@ def construct_response(joke1, joke2):
     logging.info('Response: %s', response)
 
     return response
+
+
+def fetch_joke():
+    """ Get joke from remote resource """
+    response = fetch_response()
+    return extract_joke(response) if response.status_code != requests.codes.ok else None
+
+
+def fetch_response():
+    """ Get joke from remote resource """
+
+    try:
+        return requests.get(URL, headers={'Accept': 'application/json'}, timeout=TIMEOUT)
+    except requests.exceptions.RequestException as error:
+        logging.error('Error occurred while sending request: %s', error)
+        return None
+
+
+def extract_joke(response):
+    """ Extract joke from response """
+
+    try:
+        return response.json()['joke']
+    except requests.exceptions.JSONDecodeError as error:
+        logging.error('Error on extracting the joke: %s', error)
+        return None
