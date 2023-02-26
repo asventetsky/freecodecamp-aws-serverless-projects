@@ -8,7 +8,7 @@ from api_composer import composer
 class TestApiComposer(unittest.TestCase):
     """ Represent unit tests for api composer """
 
-    @patch('api_composer.service.requests')
+    @patch('api_composer.composer.requests')
     def test_lambda_handler(self, mock_requests):
         """ Unit test for lambda handler function """
 
