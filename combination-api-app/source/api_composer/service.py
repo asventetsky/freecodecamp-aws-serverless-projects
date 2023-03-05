@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=import-error
 
 """ Service for sending request to external resource """
 

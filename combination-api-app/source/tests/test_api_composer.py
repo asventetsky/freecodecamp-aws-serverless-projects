@@ -1,3 +1,5 @@
+# pylint: disable=wrong-import-position)
+
 """ Test module """
 
 import sys
