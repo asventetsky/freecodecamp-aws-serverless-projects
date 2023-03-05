@@ -16,7 +16,7 @@ class TestApiComposer(unittest.TestCase):
     """ Represent unit tests for api composer """
 
     @patch('service.requests')
-    @patch.dict(os.environ, {"JOKES_URL": "JOKES_URL", "JOKES_TIMEOUT": "JOKES_TIMEOUT"})
+    @patch.dict(os.environ, {"JOKES_URL": "JOKES_URL", "JOKES_TIMEOUT": "5"})
     def test_lambda_handler(self, mock_requests):
         """ Unit test for lambda handler function """
 

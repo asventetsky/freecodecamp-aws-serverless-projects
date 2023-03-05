@@ -14,7 +14,7 @@ logging.getLogger().setLevel(logging.INFO)
 def fetch_joke():
     """ Get joke from remote resource """
     response = fetch_response()
-    if response.status_code != 200:
+    if response is None or response.status_code != 200:
         logging.error('Non 200 status received: %s', response)
         return None
 
