@@ -3,9 +3,9 @@
 """ Service for sending request to external resource """
 
 import logging
-import requests
+import os
 
-from constants import URL, TIMEOUT
+import requests
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -24,7 +24,9 @@ def fetch_response():
     """ Get joke from remote resource """
 
     try:
-        return requests.get(URL, headers={'Accept': 'application/json'}, timeout=TIMEOUT)
+        url = os.environ['JOKES_URL']
+        timeout = os.environ['JOKES_TIMEOUT']
+        return requests.get(url, headers={'Accept': 'application/json'}, timeout=timeout)
     except requests.exceptions.RequestException as error:
         logging.error('Error occurred while sending request: %s', error)
         return None

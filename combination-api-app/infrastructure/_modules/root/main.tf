@@ -5,6 +5,7 @@ module "iam" {
   region = var.region
   env = var.env
   app_name = var.app_name
+
   resource_tags = var.resource_tags
 }
 
@@ -16,6 +17,9 @@ module "lambda" {
   app_name = var.app_name
   lambda_artifact_name = var.lambda_artifact_name
   lambda_role_arn = module.iam.role_arn
+  jokes_url = var.jokes_url
+  jokes_timeout = var.jokes_timeout
+
   resource_tags = var.resource_tags
 }
 
