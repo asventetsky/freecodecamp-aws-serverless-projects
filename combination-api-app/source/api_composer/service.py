@@ -1,11 +1,11 @@
-# pylint: disable=no-member
+# pylint: disable=import-error
 
 """ Service for sending request to external resource """
 
 import logging
 import requests
 
-from api_composer.constants import URL, TIMEOUT
+from constants import URL, TIMEOUT
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -13,7 +13,11 @@ logging.getLogger().setLevel(logging.INFO)
 def fetch_joke():
     """ Get joke from remote resource """
     response = fetch_response()
-    return extract_joke(response) if response.status_code != requests.codes.ok else None
+    if response.status_code != 200:
+        logging.error('Non 200 status received: %s', response)
+        return None
+
+    return extract_joke(response)
 
 
 def fetch_response():

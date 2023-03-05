@@ -1,4 +1,10 @@
+# pylint: disable=wrong-import-position)
+
 """ Test module """
+
+import sys
+
+sys.path.append('api_composer')
 
 import unittest
 from unittest.mock import MagicMock, patch
@@ -8,7 +14,7 @@ from api_composer import composer
 class TestApiComposer(unittest.TestCase):
     """ Represent unit tests for api composer """
 
-    @patch('api_composer.service.requests')
+    @patch('service.requests')
     def test_lambda_handler(self, mock_requests):
         """ Unit test for lambda handler function """
 
@@ -35,7 +41,7 @@ class TestApiComposer(unittest.TestCase):
                     ' To prevent bat breath!"}'
         }
 
-        self.assertEqual(actual_response,expected_response)
+        self.assertEqual(actual_response, expected_response)
 
 
 if __name__ == '__main__':
