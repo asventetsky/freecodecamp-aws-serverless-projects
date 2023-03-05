@@ -1,4 +1,5 @@
 # pylint: disable=import-error
+# pylint: disable=broad-exception-caught
 
 """ Service for sending request to external resource """
 
@@ -25,7 +26,12 @@ def fetch_response():
 
     try:
         url = os.environ['JOKES_URL']
-        timeout = os.environ['JOKES_TIMEOUT']
+        timeout = int(os.environ['JOKES_TIMEOUT'])
+    except Exception as error:
+        logging.error('Error occurred while fetching environment variables: %s', error)
+        return None
+
+    try:
         return requests.get(url, headers={'Accept': 'application/json'}, timeout=timeout)
     except requests.exceptions.RequestException as error:
         logging.error('Error occurred while sending request: %s', error)
