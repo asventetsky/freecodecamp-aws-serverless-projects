@@ -9,7 +9,6 @@ EOF
 }
 
 locals {
-//  common_vars = yamldecode(file("${find_in_parent_folders("common_vars.yaml")}"))
   common_vars = yamldecode(file("${get_parent_terragrunt_dir()}/common_vars.yaml"))
   env_vars = yamldecode(file("${path_relative_to_include()}/env_vars.yaml"))
   parsed = regex(".*/infrastructure/environments/(?P<env>.*)", get_terragrunt_dir())
@@ -47,7 +46,7 @@ inputs = {
   app_name = "${local.app_name}"
   lambda_artifact_name = "${local.lambda_artifact_name}"
   jokes_url = "${local.jokes_url}"
-  jokes_timeout = "${local.jokes_timeout}"
+  jokes_timeout = local.jokes_timeout
   resource_tags = {
     Application = "${local.app_name}",
     Environment = "${local.env}",
