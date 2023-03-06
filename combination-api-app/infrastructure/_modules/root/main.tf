@@ -1,4 +1,3 @@
-# TODO: update source path for each module
 module "iam" {
   source = "../../../../../_modules/iam"
 
