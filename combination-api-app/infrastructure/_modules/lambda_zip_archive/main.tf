@@ -8,6 +8,13 @@ resource "aws_lambda_function" "api_combiner" {
   handler = "composer.lambda_handler"
   runtime = "python3.9"
 
+  environment {
+    variables = {
+      JOKES_URL = var.jokes_url
+      JOKES_TIMEOUT = var.jokes_timeout
+    }
+  }
+
   tags = var.resource_tags
 }
 

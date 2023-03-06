@@ -1,11 +1,12 @@
 # pylint: disable=import-error
+# pylint: disable=broad-exception-caught
 
 """ Service for sending request to external resource """
 
 import logging
-import requests
+import os
 
-from constants import URL, TIMEOUT
+import requests
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -13,7 +14,7 @@ logging.getLogger().setLevel(logging.INFO)
 def fetch_joke():
     """ Get joke from remote resource """
     response = fetch_response()
-    if response.status_code != 200:
+    if response is None or response.status_code != 200:
         logging.error('Non 200 status received: %s', response)
         return None
 
@@ -24,7 +25,14 @@ def fetch_response():
     """ Get joke from remote resource """
 
     try:
-        return requests.get(URL, headers={'Accept': 'application/json'}, timeout=TIMEOUT)
+        url = os.environ['JOKES_URL']
+        timeout = int(os.environ['JOKES_TIMEOUT'])
+    except Exception as error:
+        logging.error('Error occurred while fetching environment variables: %s', error)
+        return None
+
+    try:
+        return requests.get(url, headers={'Accept': 'application/json'}, timeout=timeout)
     except requests.exceptions.RequestException as error:
         logging.error('Error occurred while sending request: %s', error)
         return None
