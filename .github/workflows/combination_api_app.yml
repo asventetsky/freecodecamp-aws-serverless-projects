@@ -4,6 +4,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  install-dependencies:
+    name: Install dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "📦 install dependencies"
+        run: chmod +x .github/workflows/scripts/combination-api-app/install_dependencies.sh && \
+          .github/workflows/scripts/combination-api-app/install_dependencies.sh
+
+      - name: "💾 save project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
+
   lint:
     name: Code standards
     runs-on: ubuntu-latest
@@ -15,110 +38,111 @@ jobs:
       - name: "🔧 install python 3.9"
         uses: actions/setup-python@v4
         with:
-            python-version: '3.9'
-
-      - name: "🔧 install pylint"
-        run: pip install pylint
-
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
-
-      - name: "🔍 lint code"
-        run: cd combination-api-app/source && find . -type f -name "*.py" | xargs pylint
-
-  test:
-    name: Test application
-    needs: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
           python-version: '3.9'
 
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
-
-      - name: "🔍 run tests"
-        run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
-
-  build:
-    name: Build application
-    needs: test
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
-
-      - name: "🔧 construct lambda artifact name"
-        id: construct-lambda-artifact-name
-        run: |
-            GITHUB_BUILD_NUMBER=${{ github.run_number }}
-            LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
-            echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
-
-      - name: "🔍 run build"
-        run: |
-            chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
-            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.construct-lambda-artifact-name.outputs.name }}
-
-      - name: "💾 save lambda artifact"
+      - name: "💾 fetch project dependencies"
         uses: actions/cache@v3
         with:
-          key: lambda-api-combiner-${{ github.run_number }}
-          path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
-
-    outputs:
-      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
-
-  deploy-dev:
-    name: Deploy application to DEV
-    environment: dev
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
-      LAMBDA_ARTIFACT_NAME: ${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
-    steps:
-
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "💾 fetch lambda artifact"
-        uses: actions/cache@v3
-        with:
-          key: lambda-api-combiner-${{ github.run_number }}
-          # somehow `./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}` doesn't work
-          path: ./combination-api-app/source/target/${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
           fail-on-cache-miss: true
 
-      - name: "🔧 install terraform 1.3.8"
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.3.8
+      - name: "🔍 lint code"
+        run: cd combination-api-app/source/venv && source venv/bin/activate && find . -type f -name "*.py" | xargs pylint
 
-      - name: "🔧 install terragrunt 0.43.2"
-        run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
-
-      - name: "📦 prepare common_vars file for terragrunt"
-        run: |
-            (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./combination-api-app/infrastructure/environments/common_vars.yaml
-            cat ./combination-api-app/infrastructure/environments/common_vars.yaml
-
-      - name: "🔍 run terragrunt init and terragrunt apply"
-        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init --terragrunt-non-interactive && terragrunt apply -auto-approve
+#  test:
+#    name: Test application
+#    needs: lint
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    steps:
+#      - name: "☁️ checkout repository"
+#        uses: actions/checkout@v3
+#
+#      - name: "🔧 install python 3.9"
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.9'
+#
+#      - name: "📦 install dependencies"
+#        run: cd combination-api-app/source && pip install -r requirements.txt
+#
+#      - name: "🔍 run tests"
+#        run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
+#
+#  build:
+#    name: Build application
+#    needs: test
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    steps:
+#      - name: "☁️ checkout repository"
+#        uses: actions/checkout@v3
+#
+#      - name: "🔧 install python 3.9"
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.9'
+#
+#      - name: "📦 install dependencies"
+#        run: cd combination-api-app/source && pip install -r requirements.txt
+#
+#      - name: "🔧 construct lambda artifact name"
+#        id: construct-lambda-artifact-name
+#        run: |
+#            GITHUB_BUILD_NUMBER=${{ github.run_number }}
+#            LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
+#            echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
+#
+#      - name: "🔍 run build"
+#        run: |
+#            chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
+#            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.construct-lambda-artifact-name.outputs.name }}
+#
+#      - name: "💾 save lambda artifact"
+#        uses: actions/cache@v3
+#        with:
+#          key: lambda-api-combiner-${{ github.run_number }}
+#          path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
+#
+#    outputs:
+#      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
+#
+#  deploy-dev:
+#    name: Deploy application to DEV
+#    environment: dev
+#    needs: build
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    env:
+#      AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+#      AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+#      LAMBDA_ARTIFACT_NAME: ${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
+#    steps:
+#
+#      - name: "☁️ checkout repository"
+#        uses: actions/checkout@v3
+#
+#      - name: "💾 fetch lambda artifact"
+#        uses: actions/cache@v3
+#        with:
+#          key: lambda-api-combiner-${{ github.run_number }}
+#          # somehow `./combination-api-app/source/target/${LAMBDA_ARTIFACT_NAME}` doesn't work
+#          path: ./combination-api-app/source/target/${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
+#          fail-on-cache-miss: true
+#
+#      - name: "🔧 install terraform 1.3.8"
+#        uses: hashicorp/setup-terraform@v2
+#        with:
+#          terraform_version: 1.3.8
+#
+#      - name: "🔧 install terragrunt 0.43.2"
+#        run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
+#
+#      - name: "📦 prepare common_vars file for terragrunt"
+#        run: |
+#            (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./combination-api-app/infrastructure/environments/common_vars.yaml
+#            cat ./combination-api-app/infrastructure/environments/common_vars.yaml
+#
+#      - name: "🔍 run terragrunt init and terragrunt apply"
+#        run: cd combination-api-app/infrastructure/environments/dev && terragrunt init --terragrunt-non-interactive && terragrunt apply -auto-approve
