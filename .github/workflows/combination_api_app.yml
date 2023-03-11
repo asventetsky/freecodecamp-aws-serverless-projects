@@ -18,7 +18,8 @@ jobs:
           python-version: '3.9'
 
       - name: "📦 install dependencies"
-        run: chmod +x .github/workflows/scripts/combination-api-app/install_dependencies.sh && \
+        run: |
+          chmod +x .github/workflows/scripts/combination-api-app/install_dependencies.sh && \
           .github/workflows/scripts/combination-api-app/install_dependencies.sh
 
       - name: "💾 save project dependencies"
@@ -29,6 +30,7 @@ jobs:
 
   lint:
     name: Code standards
+    needs: install-dependencies
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
