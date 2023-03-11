@@ -50,7 +50,7 @@ jobs:
           fail-on-cache-miss: true
 
       - name: "🔍 lint code"
-        run: cd combination-api-app/source && source venv/bin/activate && find . -type f -name "*.py" | xargs pylint
+        run: cd combination-api-app/source && source venv/bin/activate && find . -type f -name "*.py" -not -path "./venv/*" | xargs pylint
 
 #  test:
 #    name: Test application
