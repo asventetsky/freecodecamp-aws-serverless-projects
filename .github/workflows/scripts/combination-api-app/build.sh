@@ -8,13 +8,6 @@ main() {
   echo "Creating a directory for artifact."
   mkdir target
 
-# It has been already done in `install-dependencies` job
-#  echo "Installing dependencies."
-#  python3 -m venv venv
-#  source venv/bin/activate
-#  pip install -r requirements.txt
-#  deactivate
-
   echo "Creating a package with dependencies."
   (
     cd venv/lib/python3.9/site-packages/ || exit
