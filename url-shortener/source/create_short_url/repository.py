@@ -3,13 +3,13 @@ import logging
 import botocore
 import boto3
 
-client = boto3.client('dynamodb')
+client = boto3.client('dynamodb', region_name='eu-central-1')
 table_name = "short-urls"
 
 logging.getLogger().setLevel(logging.INFO)
 
 
-def create_url_record(original_url, url_hash):
+def put_record(original_url, url_hash):
     try:
         client.put_item(
             TableName=table_name,

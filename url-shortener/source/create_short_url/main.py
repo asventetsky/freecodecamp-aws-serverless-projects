@@ -1,7 +1,7 @@
 import json
 import logging
 
-from repository import create_url_record
+from repository import put_record
 from url_hash_generator import generate
 
 logging.getLogger().setLevel(logging.INFO)
@@ -10,12 +10,10 @@ logging.getLogger().setLevel(logging.INFO)
 def lambda_handler(event, context):
     original_url = extract_original_url(event)
     url_hash = generate(original_url)
-    create_url_record(original_url, url_hash)
-
-    short_url = construct_short_url
+    put_record(original_url, url_hash)
 
     result = {
-        'shortUrl': short_url
+        'shortUrl': construct_short_url(event, url_hash)
     }
 
     return {
@@ -35,8 +33,10 @@ def extract_original_url(event):
     return original_url
 
 
-def construct_short_url(event):
+def construct_short_url(event, url_hash):
     api_url = f"https://{event['headers']['Host']}/{event['requestContext']['stage']}"
-    generated_short_url = f"{api_url}/{hash}"
+    generated_short_url = f"{api_url}/{url_hash}"
+
     logging.info('Generated short url: %s', generated_short_url)
+
     return generated_short_url
