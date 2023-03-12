@@ -52,64 +52,72 @@ jobs:
       - name: "🔍 lint code"
         run: cd combination-api-app/source && source venv/bin/activate && find . -type f -name "*.py" -not -path "./venv/*" | xargs pylint
 
-#  test:
-#    name: Test application
-#    needs: lint
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 10
-#    steps:
-#      - name: "☁️ checkout repository"
-#        uses: actions/checkout@v3
-#
-#      - name: "🔧 install python 3.9"
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: '3.9'
-#
-#      - name: "📦 install dependencies"
-#        run: cd combination-api-app/source && pip install -r requirements.txt
-#
-#      - name: "🔍 run tests"
-#        run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
-#
-#  build:
-#    name: Build application
-#    needs: test
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 10
-#    steps:
-#      - name: "☁️ checkout repository"
-#        uses: actions/checkout@v3
-#
-#      - name: "🔧 install python 3.9"
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: '3.9'
-#
-#      - name: "📦 install dependencies"
-#        run: cd combination-api-app/source && pip install -r requirements.txt
-#
-#      - name: "🔧 construct lambda artifact name"
-#        id: construct-lambda-artifact-name
-#        run: |
-#            GITHUB_BUILD_NUMBER=${{ github.run_number }}
-#            LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
-#            echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
-#
-#      - name: "🔍 run build"
-#        run: |
-#            chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
-#            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.construct-lambda-artifact-name.outputs.name }}
-#
-#      - name: "💾 save lambda artifact"
-#        uses: actions/cache@v3
-#        with:
-#          key: lambda-api-combiner-${{ github.run_number }}
-#          path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
-#
-#    outputs:
-#      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
-#
+  test:
+    name: Test application
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "💾 fetch project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
+          fail-on-cache-miss: true
+
+      - name: "🔍 run tests"
+        run: cd combination-api-app/source && source venv/bin/activate && python3 -m unittest tests.test_api_composer
+
+  build:
+    name: Build application
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "💾 fetch project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
+          fail-on-cache-miss: true
+
+      - name: "🔧 construct lambda artifact name"
+        id: construct-lambda-artifact-name
+        run: |
+            GITHUB_BUILD_NUMBER=${{ github.run_number }}
+            LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
+            echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: "🔍 run build"
+        run: |
+            chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
+            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.construct-lambda-artifact-name.outputs.name }}
+
+      - name: "💾 save lambda artifact"
+        uses: actions/cache@v3
+        with:
+          key: lambda-api-combiner-${{ github.run_number }}
+          path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
+
+    outputs:
+      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
+
 #  deploy-dev:
 #    name: Deploy application to DEV
 #    environment: dev
