@@ -22,7 +22,15 @@ class TestCreateShortUrl(unittest.TestCase):
         mock_generate_url_hash.return_value = "123456"
         mock_put_record.return_value = None
 
-        event = {'body': '{"originalUrl": "https://url"}', 'headers': {'Host': 'domainhost'}, 'requestContext': {'stage': 'test'}}
+        event = {
+            'body': '{"originalUrl": "https://url"}',
+            'headers': {
+                'Host': 'domainhost'
+            },
+            'requestContext': {
+                'stage': 'test'
+            }
+        }
         actual_response = main.lambda_handler(event, {})
 
         expected_response = {
