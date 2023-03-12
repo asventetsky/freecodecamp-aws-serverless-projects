@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    name: Code standards
+  install-dependencies:
+    name: Install dependencies
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -15,16 +15,42 @@ jobs:
       - name: "🔧 install python 3.9"
         uses: actions/setup-python@v4
         with:
-            python-version: '3.9'
-
-      - name: "🔧 install pylint"
-        run: pip install pylint
+          python-version: '3.9'
 
       - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
+        run: |
+          chmod +x .github/workflows/scripts/combination-api-app/install_dependencies.sh && \
+          .github/workflows/scripts/combination-api-app/install_dependencies.sh
+
+      - name: "💾 save project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
+
+  lint:
+    name: Code standards
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "💾 fetch project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
+          fail-on-cache-miss: true
 
       - name: "🔍 lint code"
-        run: cd combination-api-app/source && find . -type f -name "*.py" | xargs pylint
+        run: cd combination-api-app/source && source venv/bin/activate && find . -type f -name "*.py" -not -path "./venv/*" | xargs pylint
 
   test:
     name: Test application
@@ -40,11 +66,15 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
+      - name: "💾 fetch project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
+          fail-on-cache-miss: true
 
       - name: "🔍 run tests"
-        run: cd combination-api-app/source && python3 -m unittest tests.test_api_composer
+        run: cd combination-api-app/source && source venv/bin/activate && python3 -m unittest tests.test_api_composer
 
   build:
     name: Build application
@@ -60,8 +90,12 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
+      - name: "💾 fetch project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: combination-api-app-dependencies-${{ github.run_number }}
+          path: ./combination-api-app/source/venv
+          fail-on-cache-miss: true
 
       - name: "🔧 construct lambda artifact name"
         id: construct-lambda-artifact-name
