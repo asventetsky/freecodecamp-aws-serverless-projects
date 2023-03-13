@@ -19,8 +19,8 @@ jobs:
 
       - name: "📦 install dependencies"
         run: |
-          chmod +x .github/workflows/scripts/combination-api-app/install_dependencies.sh && \
-          .github/workflows/scripts/combination-api-app/install_dependencies.sh
+          chmod +x .github/workflows/scripts/install_dependencies.sh && \
+          .github/workflows/scripts/install_dependencies.sh "combination-api-app/source"
 
       - name: "💾 save project dependencies"
         uses: actions/cache@v3
