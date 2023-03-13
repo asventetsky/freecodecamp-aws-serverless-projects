@@ -1,4 +1,5 @@
-# pylint: disable=wrong-import-position)
+# pylint: disable=wrong-import-position
+# pylint: disable=duplicate-code
 
 """ Test module """
 
