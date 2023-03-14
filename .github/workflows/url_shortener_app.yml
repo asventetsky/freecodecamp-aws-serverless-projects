@@ -1,6 +1,9 @@
 name: Deploy Url Shortener app
 
 on:
+  push:
+    branches:
+      - "url-shortener-app-implement-lint-test-jobs"
   workflow_dispatch:
 
 env:
