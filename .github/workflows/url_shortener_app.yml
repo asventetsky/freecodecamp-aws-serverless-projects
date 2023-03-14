@@ -28,8 +28,8 @@ jobs:
       - name: "💾 save project dependencies"
         uses: actions/cache@v3
         with:
-          key: "$APP-dependencies-${{ github.run_number }}"
-          path: "./$APP/source/venv"
+          key: ${APP}-dependencies-${{ github.run_number }}
+          path: ./${APP}/source/venv
 
   lint:
     name: Code standards
@@ -48,8 +48,8 @@ jobs:
       - name: "💾 fetch project dependencies"
         uses: actions/cache@v3
         with:
-          key: "$APP-dependencies-${{ github.run_number }}"
-          path: "./$APP/source/venv"
+          key: ${APP}-dependencies-${{ github.run_number }}
+          path: ./${APP}/source/venv
           fail-on-cache-miss: true
 
       - name: "🔍 lint code"
