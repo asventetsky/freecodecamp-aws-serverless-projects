@@ -6,7 +6,7 @@
 import json
 import logging
 
-from repository import get_record
+from repository_2 import get_record
 
 logging.getLogger().setLevel(logging.INFO)
 

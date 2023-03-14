@@ -1,7 +1,9 @@
 #!/bin/bash
 
 main() {
-  cd combination-api-app/source || exit
+  SOURCE_DIR=$1
+
+  cd $SOURCE_DIR || exit
 
   echo "Installing dependencies."
 
