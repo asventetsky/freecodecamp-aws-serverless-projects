@@ -23,13 +23,13 @@ jobs:
       - name: "📦 install dependencies"
         run: |
           chmod +x .github/workflows/scripts/install_dependencies.sh && \
-          .github/workflows/scripts/install_dependencies.sh "$APP/source"
+          .github/workflows/scripts/install_dependencies.sh "${{ env.APP }}/source"
 
       - name: "💾 save project dependencies"
         uses: actions/cache@v3
         with:
-          key: ${APP}-dependencies-${{ github.run_number }}
-          path: ./${APP}/source/venv
+          key: ${{ env.APP }}-dependencies-${{ github.run_number }}
+          path: ./${{ env.APP }}/source/venv
 
   lint:
     name: Code standards
@@ -48,12 +48,12 @@ jobs:
       - name: "💾 fetch project dependencies"
         uses: actions/cache@v3
         with:
-          key: ${APP}-dependencies-${{ github.run_number }}
-          path: ./${APP}/source/venv
+          key: ${{ env.APP }}-dependencies-${{ github.run_number }}
+          path: ./${{ env.APP }}/source/venv
           fail-on-cache-miss: true
 
       - name: "🔍 lint code"
-        run: cd $APP/source && source venv/bin/activate && find . -type f -name "*.py" -not -path "./venv/*" | xargs pylint
+        run: cd ${{ env.APP }}/source && source venv/bin/activate && find . -type f -name "*.py" -not -path "./venv/*" | xargs pylint
 
   test:
     name: Test application
@@ -72,9 +72,9 @@ jobs:
       - name: "💾 fetch project dependencies"
         uses: actions/cache@v3
         with:
-          key: $APP-dependencies-${{ github.run_number }}
-          path: ./$APP/source/venv
+          key: ${{ env.APP }}-dependencies-${{ github.run_number }}
+          path: ./${{ env.APP }}/source/venv
           fail-on-cache-miss: true
 
       - name: "🔍 run tests"
-        run: cd $APP/source && source venv/bin/activate && python3 -m unittest discover test
+        run: cd ${{ env.APP }}/source && source venv/bin/activate && python3 -m unittest discover test
