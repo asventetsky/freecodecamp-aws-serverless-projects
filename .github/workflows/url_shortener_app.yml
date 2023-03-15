@@ -8,9 +8,9 @@ env:
 
 jobs:
   install-dependencies:
-    uses: ./.github/workflows/install_python_dependencies.yml
+    uses: ./.github/workflows/_install_python_dependencies.yml
     with:
-      application: ${{ env.APP }}
+      application: "${{ env.APP }}"
 
   lint:
     name: Code standards
