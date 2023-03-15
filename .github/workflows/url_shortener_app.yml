@@ -8,28 +8,9 @@ env:
 
 jobs:
   install-dependencies:
-    name: Install dependencies
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "📦 install dependencies"
-        run: |
-          chmod +x .github/workflows/scripts/install_dependencies.sh && \
-          .github/workflows/scripts/install_dependencies.sh "${{ env.APP }}/source"
-
-      - name: "💾 save project dependencies"
-        uses: actions/cache@v3
-        with:
-          key: ${{ env.APP }}-dependencies-${{ github.run_number }}
-          path: ./${{ env.APP }}/source/venv
+    uses: ./.github/workflows/install_python_dependencies.yml
+    with:
+      application: ${{ env.APP }}
 
   lint:
     name: Code standards

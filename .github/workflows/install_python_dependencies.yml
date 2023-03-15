@@ -1,0 +1,33 @@
+name: Deploy Combination API app
+
+on:
+  workflow_call:
+    inputs:
+      application:
+        required: true
+        type: string
+
+jobs:
+  install-dependencies:
+    name: Install dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "📦 install dependencies"
+        run: |
+          chmod +x .github/workflows/scripts/install_dependencies.sh && \
+          .github/workflows/scripts/install_dependencies.sh "${{ inputs.application }}/source"
+
+      - name: "💾 save project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: ${{ inputs.application }}-dependencies-${{ github.run_number }}
+          path: ./${{ inputs.application }}/source/venv
