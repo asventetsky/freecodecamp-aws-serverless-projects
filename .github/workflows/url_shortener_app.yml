@@ -4,13 +4,15 @@ on:
   workflow_dispatch:
 
 env:
-  APP: url-shortener-app
+  ## usage of repository env is a workaround cause env variables can not be passed in reusable workflows
+  APP: ${{ vars.URL_SHORTENER_APP }}
 
 jobs:
   install-dependencies:
+    name: Install dependencies
     uses: ./.github/workflows/_install_python_dependencies.yml
     with:
-      application: $APP
+      application: ${{ vars.URL_SHORTENER_APP }}
 
   lint:
     name: Code standards
