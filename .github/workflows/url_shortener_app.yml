@@ -10,7 +10,7 @@ jobs:
   install-dependencies:
     uses: ./.github/workflows/_install_python_dependencies.yml
     with:
-      application: "url-shortener-app"
+      application: $APP
 
   lint:
     name: Code standards
