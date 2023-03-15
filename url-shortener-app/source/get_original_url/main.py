@@ -3,10 +3,14 @@
 
 """ Application logic """
 
+import sys
+
+sys.path.append('../dynamo_db')
+
 import json
 import logging
 
-from repository_2 import get_record
+from dynamo_db.repository import get_record
 
 logging.getLogger().setLevel(logging.INFO)
 
