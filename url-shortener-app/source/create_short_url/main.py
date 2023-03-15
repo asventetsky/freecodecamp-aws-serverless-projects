@@ -3,10 +3,14 @@
 
 """ Application logic """
 
+import sys
+
+sys.path.append('../dynamo_db')
+
 import json
 import logging
 
-from repository import put_record
+from dynamo_db.repository import put_record
 from url_hash_generator import generate
 
 logging.getLogger().setLevel(logging.INFO)
