@@ -1,0 +1,30 @@
+on:
+  workflow_call:
+    inputs:
+      application:
+        required: true
+        type: string
+
+jobs:
+  test:
+    name: Test application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "💾 fetch project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: ${{ inputs.application }}-dependencies-${{ github.run_number }}
+          path: ./${{ inputs.application }}/source/venv
+          fail-on-cache-miss: true
+
+      - name: "🔍 run tests"
+        run: cd ${{ inputs.application }}/source && source venv/bin/activate && python3 -m unittest discover tests

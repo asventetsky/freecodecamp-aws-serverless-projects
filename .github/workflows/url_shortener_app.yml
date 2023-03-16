@@ -10,54 +10,20 @@ env:
 jobs:
   install-dependencies:
     name: Install dependencies
-    uses: ./.github/workflows/_install_python_dependencies.yml
+    uses: ./.github/workflows/_python_install_dependencies.yml
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
 
-  lint:
+  code-quality:
     name: Code standards
     needs: install-dependencies
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "💾 fetch project dependencies"
-        uses: actions/cache@v3
-        with:
-          key: ${{ env.APP }}-dependencies-${{ github.run_number }}
-          path: ./${{ env.APP }}/source/venv
-          fail-on-cache-miss: true
-
-      - name: "🔍 lint code"
-        run: cd ${{ env.APP }}/source && source venv/bin/activate && find . -type f -name "*.py" -not -path "./venv/*" | xargs pylint
+    uses: ./.github/workflows/_python_code_quality.yml
+    with:
+      application: ${{ vars.URL_SHORTENER_APP }}
 
   test:
     name: Test application
-    needs: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "💾 fetch project dependencies"
-        uses: actions/cache@v3
-        with:
-          key: ${{ env.APP }}-dependencies-${{ github.run_number }}
-          path: ./${{ env.APP }}/source/venv
-          fail-on-cache-miss: true
-
-      - name: "🔍 run tests"
-        run: cd ${{ env.APP }}/source && source venv/bin/activate && python3 -m unittest discover tests
+    needs: code-quality
+    uses: ./.github/workflows/_python_test.yml
+    with:
+      application: ${{ vars.URL_SHORTENER_APP }}
