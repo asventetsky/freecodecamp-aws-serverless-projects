@@ -1,5 +1,6 @@
 # pylint: disable=unused-argument
 # pylint: disable=import-error
+# pylint: disable=wrong-import-position
 
 """ Application logic """
 
