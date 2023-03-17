@@ -1,5 +1,3 @@
-name: Deploy Combination API app
-
 on:
   workflow_call:
     inputs:

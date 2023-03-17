@@ -1,5 +1,6 @@
 # pylint: disable=unused-argument
 # pylint: disable=import-error
+# pylint: disable=wrong-import-position
 
 """ Application logic """
 
@@ -10,8 +11,8 @@ sys.path.append('../dynamo_db')
 import json
 import logging
 
-from dynamo_db.repository import put_record
 from url_hash_generator import generate
+from dynamo_db.repository import put_record
 
 logging.getLogger().setLevel(logging.INFO)
 
