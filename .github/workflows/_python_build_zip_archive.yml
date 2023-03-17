@@ -41,7 +41,7 @@ jobs:
       - name: "🔍 run build"
         run: |
           chmod +x .github/workflows/scripts/build.sh && \
-          .github/workflows/scripts/build.sh ${{ inputs.application }}/source ${{ inputs.lambda-source-dir }} ${{ inputs.files-folders-to-add }} ${{ steps.construct-lambda-artifact-name.outputs.name }}
+          .github/workflows/scripts/build.sh ${{ inputs.application }} ${{ inputs.lambda-source-dir }} ${{ inputs.files-folders-to-add }} ${{ steps.construct-lambda-artifact-name.outputs.name }}
 
       - name: "💾 save lambda artifact"
         uses: actions/cache@v3
