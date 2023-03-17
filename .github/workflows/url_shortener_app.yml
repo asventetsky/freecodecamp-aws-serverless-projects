@@ -1,4 +1,4 @@
-name: Deploy Url Shortener app
+name: URL Shortener APP DEPLOY
 
 on:
   workflow_dispatch:
