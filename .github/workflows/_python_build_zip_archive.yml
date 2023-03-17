@@ -46,7 +46,7 @@ jobs:
       - name: "💾 save lambda artifact"
         uses: actions/cache@v3
         with:
-          key: lambda-api-combiner-${{ github.run_number }}
+          key: lambda-${{ inputs.lambda-source-dir }}-${{ github.run_number }}
           path: ./${{ inputs.application }}/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
 
     outputs:
