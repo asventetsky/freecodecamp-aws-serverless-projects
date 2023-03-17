@@ -6,12 +6,7 @@ main() {
   FILES_FOLDERS_TO_ADD=$3
   LAMBDA_ARTIFACT_NAME=$4
 
-  echo "Variables: APP=$APP, LAMBDA_SOURCE_DIR=$LAMBDA_SOURCE_DIR, FILES_FOLDERS_TO_ADD=$FILES_FOLDERS_TO_ADD, LAMBDA_ARTIFACT_NAME=$LAMBDA_ARTIFACT_NAME."
-
   cd "${APP}"/source || exit
-
-  echo "List app folder."
-  ls -l
 
   echo "Creating a directory for artifact."
   mkdir target
