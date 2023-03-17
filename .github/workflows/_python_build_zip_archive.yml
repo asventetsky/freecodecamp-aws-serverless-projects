@@ -1,0 +1,53 @@
+on:
+  workflow_call:
+    inputs:
+      application:
+        required: true
+        type: string
+      lambda-source-dir:
+        required: true
+        type: string
+      files-folders-to-add:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "🔧 install python 3.9"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "💾 fetch project dependencies"
+        uses: actions/cache@v3
+        with:
+          key: ${{ inputs.application }}-dependencies-${{ github.run_number }}
+          path: ./${{ inputs.application }}/source/venv
+          fail-on-cache-miss: true
+
+      - name: "🔧 construct lambda artifact name"
+        id: construct-lambda-artifact-name
+        run: |
+          LAMBDA_ARTIFACT_NAME=lambda-${{ inputs.lambda-source-dir }}-${{ github.run_number }}.zip
+          echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: "🔍 run build"
+        run: |
+          chmod +x .github/workflows/scripts/build.sh && \
+          .github/workflows/scripts/build.sh ${{ inputs.application }}/source ${{ inputs.lambda-source-dir }} ${{ inputs.files-folders-to-add }} ${{ steps.construct-lambda-artifact-name.outputs.name }}
+
+      - name: "💾 save lambda artifact"
+        uses: actions/cache@v3
+        with:
+          key: lambda-api-combiner-${{ github.run_number }}
+          path: ./${{ inputs.application }}/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
+
+    outputs:
+      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}

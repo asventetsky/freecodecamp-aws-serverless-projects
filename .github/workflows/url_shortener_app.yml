@@ -27,3 +27,21 @@ jobs:
     uses: ./.github/workflows/_python_test.yml
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
+
+  build-lambda-create-short-url:
+    name: Build application
+    needs: test
+    uses: ./.github/workflows/_python_build_zip_archive.yml
+    with:
+      application: ${{ vars.URL_SHORTENER_APP }}
+      lambda-source-dir: create-short-url
+      files-folders-to-add: dynamo_db/ main.py url_hash_generator.py
+
+  build-lambda-get-original-url:
+    name: Build application
+    needs: test
+    uses: ./.github/workflows/_python_build_zip_archive.yml
+    with:
+      application: ${{ vars.URL_SHORTENER_APP }}
+      lambda-source-dir: get-original-url
+      files-folders-to-add: dynamo_db/ main.py
