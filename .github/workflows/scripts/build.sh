@@ -1,12 +1,12 @@
 #!/bin/bash
 
 main() {
-  APP_PATH=$1
+  APP=$1
   LAMBDA_SOURCE_DIR=$2
   FILES_AND_FOLDER_TO_ADD=$3
   LAMBDA_ARTIFACT_NAME=$4
 
-  cd $APP_PATH || exit
+  cd "${APP}"/source || exit
 
   echo "Creating a directory for artifact."
   mkdir target
