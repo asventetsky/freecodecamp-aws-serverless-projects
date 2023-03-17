@@ -10,28 +10,28 @@ env:
 jobs:
   install-dependencies:
     name: Install dependencies
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@4744a2b
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@main
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
 
   code-quality:
     name: Code standards
     needs: install-dependencies
-    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_code_quality.yml@4744a2b
+    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_code_quality.yml@main
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
 
   test:
     name: Test application
     needs: code-quality
-    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@4744a2b
+    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@main
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
 
   build-lambda-create-short-url:
     name: Build lambda create short url
     needs: test
-    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@4744a2b
+    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@main
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambda-source-dir: create_short_url
@@ -40,7 +40,7 @@ jobs:
   build-lambda-get-original-url:
     name: Build lambda get original url
     needs: test
-    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@4744a2b
+    uses: .asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@main
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambda-source-dir: get_original_url
