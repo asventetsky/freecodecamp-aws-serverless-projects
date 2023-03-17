@@ -1,0 +1,2 @@
+app_name: "url-shortener-app"
+s3_bucket_prefix: "freecodecamp-aws-serverless-projects-tf-state"
