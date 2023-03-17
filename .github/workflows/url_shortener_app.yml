@@ -30,7 +30,7 @@ jobs:
 
   build-lambda-create-short-url:
     name: Build lambda create short url
-#    needs: test
+    needs: install-dependencies
     uses: ./.github/workflows/_python_build_zip_archive.yml
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
