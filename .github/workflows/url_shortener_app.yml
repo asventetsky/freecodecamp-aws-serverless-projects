@@ -35,6 +35,7 @@ jobs:
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambda-source-dir: create_short_url
+      # TODO find a solution to bind lambda source directory to all required file in archive
       files-folders-to-add: "dynamo_db/ main.py url_hash_generator.py"
 
   build-lambda-get-original-url:
@@ -44,4 +45,5 @@ jobs:
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambda-source-dir: get_original_url
+      # TODO find a solution to bind lambda source directory to all required file in archive
       files-folders-to-add: "dynamo_db/ main.py"
