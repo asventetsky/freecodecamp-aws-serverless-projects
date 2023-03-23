@@ -1,4 +1,4 @@
-name: Deploy Combination API app
+name: Combination API App DEPLOY
 
 on:
   workflow_dispatch:
