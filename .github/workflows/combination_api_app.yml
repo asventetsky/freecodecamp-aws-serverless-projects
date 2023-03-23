@@ -65,6 +65,7 @@ jobs:
         with:
           terraform_version: 1.3.8
 
+      # Very weird that `wget` command finishes with error: `Error: Process completed with exit code 4.`
       - name: "🔧 install terragrunt 0.43.2"
         run: |
             curl -LJO https://github.com/gruntwork-io/terragrunt/releases/download/v0.43.2/terragrunt_linux_amd64
