@@ -47,7 +47,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
-      LAMBDA_ARTIFACT_NAME: ${{ needs.build-lambda-api-composer.outputs.LAMBDA_ARTIFACT_NAME }}
+      LAMBDA_ARTIFACT_NAME: ${{ needs.build.outputs.LAMBDA_ARTIFACT_NAME }}
     steps:
 
       - name: "☁️ checkout repository"
