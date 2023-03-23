@@ -3,120 +3,40 @@ name: Deploy Combination API app
 on:
   workflow_dispatch:
 
+env:
+  ## usage of repository env is a workaround cause env variables can not be passed in reusable workflows
+  APP: ${{ vars.COMBINATION_API_APP }}
+
 jobs:
   install-dependencies:
     name: Install dependencies
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
 
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "📦 install dependencies"
-        run: |
-          chmod +x .github/workflows/scripts/install_dependencies.sh && \
-          .github/workflows/scripts/install_dependencies.sh "combination-api-app/source"
-
-      - name: "💾 save project dependencies"
-        uses: actions/cache@v3
-        with:
-          key: combination-api-app-dependencies-${{ github.run_number }}
-          path: ./combination-api-app/source/venv
-
-  lint:
+  code-quality:
     name: Code standards
     needs: install-dependencies
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "💾 fetch project dependencies"
-        uses: actions/cache@v3
-        with:
-          key: combination-api-app-dependencies-${{ github.run_number }}
-          path: ./combination-api-app/source/venv
-          fail-on-cache-miss: true
-
-      - name: "🔍 lint code"
-        run: cd combination-api-app/source && source venv/bin/activate && find . -type f -name "*.py" -not -path "./venv/*" | xargs pylint
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_code_quality.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
 
   test:
     name: Test application
-    needs: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
+    needs: code-quality
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
 
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "💾 fetch project dependencies"
-        uses: actions/cache@v3
-        with:
-          key: combination-api-app-dependencies-${{ github.run_number }}
-          path: ./combination-api-app/source/venv
-          fail-on-cache-miss: true
-
-      - name: "🔍 run tests"
-        run: cd combination-api-app/source && source venv/bin/activate && python3 -m unittest tests.test_api_composer
-
-  build:
-    name: Build application
+  build-lambda-api-composer:
+    name: Build lambda api composer
     needs: test
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "💾 fetch project dependencies"
-        uses: actions/cache@v3
-        with:
-          key: combination-api-app-dependencies-${{ github.run_number }}
-          path: ./combination-api-app/source/venv
-          fail-on-cache-miss: true
-
-      - name: "🔧 construct lambda artifact name"
-        id: construct-lambda-artifact-name
-        run: |
-            GITHUB_BUILD_NUMBER=${{ github.run_number }}
-            LAMBDA_ARTIFACT_NAME=lambda-api-combiner-${GITHUB_BUILD_NUMBER}.zip
-            echo "name=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
-
-      - name: "🔍 run build"
-        run: |
-            chmod +x .github/workflows/scripts/combination-api-app/build.sh && \
-            .github/workflows/scripts/combination-api-app/build.sh ${{ steps.construct-lambda-artifact-name.outputs.name }}
-
-      - name: "💾 save lambda artifact"
-        uses: actions/cache@v3
-        with:
-          key: lambda-api-combiner-${{ github.run_number }}
-          path: ./combination-api-app/source/target/${{ steps.construct-lambda-artifact-name.outputs.name }}
-
-    outputs:
-      LAMBDA_ARTIFACT_NAME: ${{ steps.construct-lambda-artifact-name.outputs.name }}
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
+      lambda-source-dir: api_composer
+      # TODO find a solution to bind lambda source directory to all required file in archive
+      files-folders-to-add: "main.py service.py"
 
   deploy-dev:
     name: Deploy application to DEV
@@ -147,7 +67,11 @@ jobs:
           terraform_version: 1.3.8
 
       - name: "🔧 install terragrunt 0.43.2"
-        run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
+        run: |
+            wget -O terragrunt terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.43.2/terragrunt_linux_amd64
+            chmod +x terragrunt
+            sudo mv terragrunt /usr/local/bin
+            terragrunt --version
 
       - name: "📦 prepare common_vars file for terragrunt"
         run: |
