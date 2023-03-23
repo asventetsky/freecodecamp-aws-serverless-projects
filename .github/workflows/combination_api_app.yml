@@ -36,7 +36,7 @@ jobs:
       application: ${{ vars.COMBINATION_API_APP }}
       lambda-source-dir: api_composer
       # TODO find a solution to bind lambda source directory to all required file in archive
-      files-folders-to-add: "main.py service.py"
+      files-folders-to-add: "api_composer/"
 
   deploy-dev:
     name: Deploy application to DEV

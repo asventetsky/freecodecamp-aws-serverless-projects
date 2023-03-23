@@ -5,7 +5,7 @@ resource "aws_lambda_function" "api_combiner" {
   function_name = "lambda-${var.app_name}-${var.region}-${var.env}"
   role          = var.lambda_role_arn
   source_code_hash = filebase64sha256("${path.module}/../../../source/target/${var.lambda_artifact_name}")
-  handler = "main.lambda_handler"
+  handler = "api_composer/main.lambda_handler"
   runtime = "python3.9"
 
   environment {
