@@ -67,7 +67,12 @@ jobs:
 
       - name: "🔧 install terragrunt 0.43.2"
         run: |
-            wget -O terragrunt terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.43.2/terragrunt_linux_amd64
+            wget_output=$(wget -O terragrunt terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.43.2/terragrunt_linux_amd64)
+            if [ $? -ne 0 ] && [ $? -ne 4 ]; then
+              echo "Current directory list:"
+              exit 1;
+            fi
+
             echo "Current directory list:"
             ls -l
             chmod +x terragrunt
