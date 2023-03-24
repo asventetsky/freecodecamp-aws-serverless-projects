@@ -31,7 +31,7 @@ jobs:
   build-lambda-api-composer:
     name: Build lambda api composer
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@update-build-script
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@c615fafc398a8595b5d82a528e06df5192fd9b08
     with:
       application: ${{ vars.COMBINATION_API_APP }}
       lambda-source-dir: api_composer
