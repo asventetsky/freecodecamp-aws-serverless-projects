@@ -31,12 +31,11 @@ jobs:
   build-lambda-api-composer:
     name: Build lambda api composer
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@6d3c7cc77876055b31a63ae8bf92ec917db3ee3b
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@c615fafc398a8595b5d82a528e06df5192fd9b08
     with:
       application: ${{ vars.COMBINATION_API_APP }}
       lambda-source-dir: api_composer
-      # TODO find a solution to bind lambda source directory to all required file in archive
-      files-folders-to-add: "main.py service.py"
+      files-folders-to-add: "api_composer __init__.py"
 
   deploy-dev:
     name: Deploy application to DEV
