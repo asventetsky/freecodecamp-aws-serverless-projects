@@ -31,53 +31,22 @@ jobs:
   build-lambda-api-composer:
     name: Build lambda api composer
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@c615fafc398a8595b5d82a528e06df5192fd9b08
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@python-reusable-deploy-workflow
     with:
       application: ${{ vars.COMBINATION_API_APP }}
-      lambda-source-dir: api_composer
+      lambda-name: lambda-api-composer
+      # TODO find a solution to bind lambda source directory to all required file in archive
       files-folders-to-add: "api_composer __init__.py"
 
   deploy-dev:
     name: Deploy application to DEV
     environment: dev
     needs: build-lambda-api-composer
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
-      LAMBDA_ARTIFACT_NAME: ${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
-    steps:
-
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
-
-      - name: "💾 fetch lambda artifact"
-        uses: actions/cache@v3
-        with:
-          key: lambda-api_composer-${{ github.run_number }}
-          path: ./${{ vars.COMBINATION_API_APP }}/source/target/${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
-          fail-on-cache-miss: true
-
-      - name: "🔧 install terraform 1.3.8"
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.3.8
-
-      # Very weird that `wget` command finishes with error: `Error: Process completed with exit code 4.`
-      - name: "🔧 install terragrunt 0.43.2"
-        run: |
-            curl -LJO https://github.com/gruntwork-io/terragrunt/releases/download/v0.43.2/terragrunt_linux_amd64
-            mv terragrunt_linux_amd64 terragrunt
-            chmod +x terragrunt
-            sudo mv terragrunt /usr/local/bin
-            ls -l /usr/local/bin
-            terragrunt --version
-
-      - name: "📦 prepare common_vars file for terragrunt"
-        run: |
-            (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
-            cat ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
-
-      - name: "🔍 run terragrunt init and terragrunt apply"
-        run: cd ${{ vars.COMBINATION_API_APP }}/infrastructure/environments/dev && terragrunt init --terragrunt-non-interactive && terragrunt apply -auto-approve
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@python-reusable-deploy-workflow
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
+      lambda-artifact-name: ${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
+      environment: dev
+    secrets:
+      aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
