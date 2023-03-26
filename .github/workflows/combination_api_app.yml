@@ -40,7 +40,6 @@ jobs:
 
   deploy-dev:
     name: Deploy application to DEV
-#    environment: dev
     needs: build-lambda-api-composer
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@python-reusable-deploy-workflow
     with:
