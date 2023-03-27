@@ -49,3 +49,13 @@ module "lambda_get_original_url_iam_role" {
 
   resource_tags = var.resource_tags
 }
+
+module "dynamo_db" {
+  source = "../../../../../_modules/dynamo_db"
+
+  region = var.region
+  env = var.env
+  app_name = var.app_name
+
+  resource_tags = var.resource_tags
+}
