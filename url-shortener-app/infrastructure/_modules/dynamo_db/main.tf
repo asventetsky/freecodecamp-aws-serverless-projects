@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "short_urls" {
-  name = "short-urls"
+  name = "short-urls-${var.app_name}-${var.region}-${var.env}"
   billing_mode = "PROVISIONED"
   read_capacity= "30"
   write_capacity= "30"
@@ -11,5 +11,5 @@ resource "aws_dynamodb_table" "short_urls" {
 
   hash_key = "hash"
 
-  tags = local.tags
+  tags = var.resource_tags
 }
