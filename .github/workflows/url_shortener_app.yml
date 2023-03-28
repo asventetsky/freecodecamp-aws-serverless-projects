@@ -34,7 +34,7 @@ jobs:
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@terraform-lambda-zip-archive-module
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
-      lambda-source-dir: create_short_url
+      lambda-name: lambda-create_short_url
       # TODO find a solution to bind lambda source directory to all required files in archive
       files-folders-to-add: "dynamo_db/ main.py url_hash_generator.py"
 
@@ -44,7 +44,7 @@ jobs:
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@terraform-lambda-zip-archive-module
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
-      lambda-source-dir: get_original_url
+      lambda-name: lambda-get_original_url
       # TODO find a solution to bind lambda source directory to all required files in archive
       files-folders-to-add: "dynamo_db/ main.py"
 
