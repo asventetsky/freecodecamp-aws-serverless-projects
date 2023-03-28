@@ -35,7 +35,7 @@ jobs:
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambda-source-dir: create_short_url
-      # TODO find a solution to bind lambda source directory to all required file in archive
+      # TODO find a solution to bind lambda source directory to all required files in archive
       files-folders-to-add: "dynamo_db/ main.py url_hash_generator.py"
 
   build-lambda-get-original-url:
@@ -45,12 +45,12 @@ jobs:
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambda-source-dir: get_original_url
-      # TODO find a solution to bind lambda source directory to all required file in archive
+      # TODO find a solution to bind lambda source directory to all required files in archive
       files-folders-to-add: "dynamo_db/ main.py"
 
   deploy-dev:
     name: Deploy application to DEV
-    needs: build-lambda-api-composer
+    needs: [build-lambda-create-short-url, build-lambda-get-original-url]
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@terraform-lambda-zip-archive-module
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
