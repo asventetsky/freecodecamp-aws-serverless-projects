@@ -54,13 +54,7 @@ jobs:
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@terraform-lambda-zip-archive-module
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
-      common-vars: |
-        (
-        echo "";
-        echo "lambda_create_short_url_artifact_name: \"${{ needs.build-lambda-create-short-url.outputs.lambda-artifact-name }}\"";
-        echo ""
-        echo "lambda_get_original_url_artifact_name: \"${{ needs.build-lambda-get-original-url.outputs.lambda-artifact-name }}\"";
-        )
+      common-vars: "lambda_create_short_url_artifact_name: \"${{ needs.build-lambda-create-short-url.outputs.lambda-artifact-name }}\"\nlambda_get_original_url_artifact_name: \"${{ needs.build-lambda-get-original-url.outputs.lambda-artifact-name }}\""
       environment: dev
     secrets:
       aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
