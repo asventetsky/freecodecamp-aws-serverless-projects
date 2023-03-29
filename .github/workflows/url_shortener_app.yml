@@ -31,32 +31,19 @@ jobs:
   build-lambda-create-short-url:
     name: Build lambda create short url
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@terraform-lambda-zip-archive-module
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
-      lambda-name: lambda-create_short_url
-      # TODO find a solution to bind lambda source directory to all required files in archive
+      lambda-source-dir: create_short_url
+      # TODO find a solution to bind lambda source directory to all required file in archive
       files-folders-to-add: "dynamo_db/ main.py url_hash_generator.py"
 
   build-lambda-get-original-url:
     name: Build lambda get original url
-    # Workaround for storing lambda artifacts in shared folder
-    needs: [build-lambda-create-short-url]
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@terraform-lambda-zip-archive-module
+    needs: test
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
-      lambda-name: lambda-get_original_url
-      # TODO find a solution to bind lambda source directory to all required files in archive
+      lambda-source-dir: get_original_url
+      # TODO find a solution to bind lambda source directory to all required file in archive
       files-folders-to-add: "dynamo_db/ main.py"
-
-  deploy-dev:
-    name: Deploy application to DEV
-    needs: [build-lambda-create-short-url, build-lambda-get-original-url]
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@terraform-lambda-zip-archive-module
-    with:
-      application: ${{ vars.URL_SHORTENER_APP }}
-      common-vars: "\nlambda_create_short_url_artifact_name: \"${{ needs.build-lambda-create-short-url.outputs.lambda-artifact-name }}\"\nlambda_get_original_url_artifact_name: \"${{ needs.build-lambda-get-original-url.outputs.lambda-artifact-name }}\""
-      environment: dev
-    secrets:
-      aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
