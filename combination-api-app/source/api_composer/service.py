@@ -13,6 +13,7 @@ def fetch_joke():
     try:
         response = _fetch_response()
         return _extract_joke(response)
+    # TODO: refactor to use user-defined ServiceError
     except ValueError:
         return None
 

@@ -1,12 +1,7 @@
 # pylint: disable=unused-argument
 # pylint: disable=import-error
-# pylint: disable=wrong-import-position
 
 """ Application logic """
-
-import sys
-
-sys.path.append('../dynamo_db')
 
 import json
 import logging
@@ -17,7 +12,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 def lambda_handler(event, context):
-    """ Contains main logic for getting original url """
+    """Contains main logic for getting original url"""
 
     url_hash = extract_url_hash(event)
     original_url = get_record(url_hash)
@@ -26,26 +21,22 @@ def lambda_handler(event, context):
 
 
 def extract_url_hash(event):
-    """ Extracts url hash from the request """
+    """Extracts url hash from the request"""
 
-    url_hash = event['pathParameters']['hash']
+    url_hash = event["pathParameters"]["hash"]
 
-    logging.info('Url hash: %s', url_hash)
+    logging.info("Url hash: %s", url_hash)
 
     return url_hash
 
 
 def construct_response(original_url):
-    """ Constructs final response """
+    """Constructs final response"""
 
-    result = {
-        'originalUrl': original_url
-    }
+    result = {"originalUrl": original_url}
 
     return {
         "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": json.dumps(result)
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps(result),
     }
