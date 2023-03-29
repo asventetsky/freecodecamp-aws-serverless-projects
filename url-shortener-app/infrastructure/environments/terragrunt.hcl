@@ -25,7 +25,8 @@ locals {
   env = local.parsed.env
   region = local.env_vars.region
   app_name = local.common_vars.app_name
-  lambda_artifact_name = local.common_vars.lambda_artifact_name
+  lambda_create_short_url_artifact_name = local.common_vars.lambda_create_short_url_artifact_name
+  lambda_get_original_url_artifact_name = local.common_vars.lambda_get_original_url_artifact_name
   s3_bucket_prefix = local.common_vars.s3_bucket_prefix
 }
 
@@ -51,7 +52,8 @@ inputs = {
   region = "${local.region}"
   env = "${local.env}"
   app_name = "${local.app_name}"
-  lambda_artifact_name = "${local.lambda_artifact_name}"
+  lambda_create_short_url_artifact_name = "${local.lambda_create_short_url_artifact_name}"
+  lambda_get_original_url_artifact_name = "${local.lambda_get_original_url_artifact_name}"
   resource_tags = {
     Application = "${local.app_name}",
     Environment = "${local.env}",

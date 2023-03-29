@@ -1,5 +1,5 @@
-output "dynamo_db_table_name" {
-  description = "DynamoDB table name"
+output "dynamo_db_table_arn" {
+  description = "DynamoDB table ARN"
 
-  value = aws_dynamodb_table.short_urls.name
+  value = aws_dynamodb_table.short_urls.arn
 }
