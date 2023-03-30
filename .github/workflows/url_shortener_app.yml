@@ -51,10 +51,22 @@ jobs:
           echo "LAMBDAS_WITH_DEPENDANT_MODULES=${LAMBDAS_WITH_DEPENDANT_MODULES}"
           echo "lambdas-with-dependant-modules=${LAMBDAS_WITH_DEPENDANT_MODULES}" >> "$GITHUB_OUTPUT"
 
-  build-lambda-create-short-url:
-    name: Build lambda create short url
+  build:
+    name: Build application
     needs: pre-built
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@refactor-build-job-to-handle-multiple-lambdas-to-build
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambdas-with-dependant-modules: ${{needs.pre-built.outputs.lambdas-with-dependant-modules}}
+
+  deploy-dev:
+    name: Deploy application to DEV
+    needs: build-lambda-api-composer
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@refactor-build-job-to-handle-multiple-lambdas-to-build
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
+      lambdas-common-vars: ${{ needs.build.outputs.lambdas-common-vars }}
+      environment: dev
+    secrets:
+      aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
