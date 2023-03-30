@@ -40,11 +40,14 @@ jobs:
         id: construct-variable
         run: |
           LAMBDAS_WITH_DEPENDANT_MODULES=$(
+          (
           cat <<-END
           lambda_create_short_url=lambda_create_short_url,dynamo_db,exception,__init__.py
           lambda_get_original_url=lambda_get_original_url,dynamo_db,exception,__init__.py
           END
+          ) | tr '\n' ';'
           )
+
           echo "LAMBDAS_WITH_DEPENDANT_MODULES=${LAMBDAS_WITH_DEPENDANT_MODULES}"
           echo "lambdas-with-dependant-modules=${LAMBDAS_WITH_DEPENDANT_MODULES}" >> "$GITHUB_OUTPUT"
 
