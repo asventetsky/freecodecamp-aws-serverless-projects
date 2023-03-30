@@ -28,22 +28,27 @@ jobs:
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
 
+  pre-built:
+    name: Prepare lambdas with dependant modules variable
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      lambdas-with-dependant-modules: ${{ steps.construct-variable.outputs.lambdas-with-dependant-modules }}
+    steps:
+      - name: "🔍 construct variable"
+        id: construct-variable
+        run: |
+          LAMBDAS_WITH_DEPENDANT_MODULES=$(cat <<-END
+          lambda_create_short_url=lambda_create_short_url,dynamo_db,exception,__init__.py
+          lambda_get_original_url=lambda_get_original_url,dynamo_db,exception,__init__.py
+          END
+          )
+          echo "lambdas-with-dependant-modules=${LAMBDA_ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
+
   build-lambda-create-short-url:
     name: Build lambda create short url
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@refactor-build-job-to-handle-multiple-lambdas-to-build
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
-      lambda-source-dir: create_short_url
-      # TODO find a solution to bind lambda source directory to all required file in archive
-      files-folders-to-add: "dynamo_db/ main.py url_hash_generator.py"
-
-  build-lambda-get-original-url:
-    name: Build lambda get original url
-    needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
-    with:
-      application: ${{ vars.URL_SHORTENER_APP }}
-      lambda-source-dir: get_original_url
-      # TODO find a solution to bind lambda source directory to all required file in archive
-      files-folders-to-add: "dynamo_db/ main.py"
+      lambdas-with-dependant-modules: ${{needs.pre-built.outputs.lambdas-with-dependant-modules}}
