@@ -64,7 +64,7 @@ jobs:
     needs: build
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@refactor-build-job-to-handle-multiple-lambdas-to-build
     with:
-      application: ${{ vars.COMBINATION_API_APP }}
+      application: ${{ vars.URL_SHORTENER_APP }}
       lambdas-common-vars: ${{ needs.build.outputs.lambdas-common-vars }}
       environment: dev
     secrets:
