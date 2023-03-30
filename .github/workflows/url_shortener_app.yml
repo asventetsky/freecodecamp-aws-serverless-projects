@@ -30,6 +30,7 @@ jobs:
 
   pre-built:
     name: Prepare lambdas with dependant modules variable
+    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
