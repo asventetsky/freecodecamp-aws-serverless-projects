@@ -44,6 +44,7 @@ jobs:
           lambda_get_original_url=lambda_get_original_url,dynamo_db,exception,__init__.py
           END
           )
+          echo "LAMBDAS_WITH_DEPENDANT_MODULES=${LAMBDAS_WITH_DEPENDANT_MODULES}"
           echo "lambdas-with-dependant-modules=${LAMBDAS_WITH_DEPENDANT_MODULES}" >> "$GITHUB_OUTPUT"
 
   build-lambda-create-short-url:
