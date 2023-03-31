@@ -68,5 +68,5 @@ jobs:
       lambdas-common-vars: ${{ needs.build.outputs.lambdas-common-vars }}
       environment: dev
     secrets:
-      aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+      aws-access-key-id: ${{ secrets.URL_SHORTENER_APP_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.URL_SHORTENER_APP_AWS_SECRET_ACCESS_KEY }}
