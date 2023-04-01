@@ -3,10 +3,6 @@ name: URL Shortener App DEPLOY
 on:
   workflow_dispatch:
 
-env:
-  ## usage of repository env is a workaround cause env variables can not be passed in reusable workflows
-  APP: ${{ vars.URL_SHORTENER_APP }}
-
 jobs:
   install-dependencies:
     name: Install dependencies
@@ -54,7 +50,7 @@ jobs:
   build:
     name: Build application
     needs: pre-built
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@refactor-build-job-to-handle-multiple-lambdas-to-build
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@1c71f0bcea456cecbedfc8b67cc540144217bb8d
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambdas-with-dependant-modules: ${{needs.pre-built.outputs.lambdas-with-dependant-modules}}
@@ -62,7 +58,7 @@ jobs:
   deploy-dev:
     name: Deploy application to DEV
     needs: build
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@refactor-build-job-to-handle-multiple-lambdas-to-build
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@1c71f0bcea456cecbedfc8b67cc540144217bb8d
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
       lambdas-common-vars: ${{ needs.build.outputs.lambdas-common-vars }}

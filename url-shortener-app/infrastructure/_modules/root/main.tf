@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "create_short_url" {
 }
 
 module "lambda_create_short_url_iam_role" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_iam_role?ref=1eaced0c1f720983105f83ea01875b4b994e5e91"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_iam_role?ref=1c71f0bcea456cecbedfc8b67cc540144217bb8d"
 
   region = var.region
   env = var.env
@@ -36,7 +36,7 @@ module "lambda_create_short_url_iam_role" {
 }
 
 module "lambda_create_short_url" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_zip_archive?ref=1eaced0c1f720983105f83ea01875b4b994e5e91"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_zip_archive?ref=1c71f0bcea456cecbedfc8b67cc540144217bb8d"
 
   name = "lambda-create_short_url-${var.region}-${var.env}"
   path_to_archive = "./../../../../../../source/target/${var.lambda_create_short_url_artifact_name}"
@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "get_original_url" {
 }
 
 module "lambda_get_original_url_iam_role" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_iam_role?ref=1eaced0c1f720983105f83ea01875b4b994e5e91"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_iam_role?ref=1c71f0bcea456cecbedfc8b67cc540144217bb8d"
 
   region = var.region
   env = var.env
@@ -74,7 +74,7 @@ module "lambda_get_original_url_iam_role" {
 }
 
 module "lambda_get_original_url" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_zip_archive?ref=1eaced0c1f720983105f83ea01875b4b994e5e91"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/lambda_zip_archive?ref=1c71f0bcea456cecbedfc8b67cc540144217bb8d"
 
   name = "lambda-get_original_url-${var.region}-${var.env}"
   path_to_archive = "./../../../../../../source/target/${var.lambda_get_original_url_artifact_name}"
