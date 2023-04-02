@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "create_short_url" {
   }
   statement {
     actions   = ["dynamodb:PutItem"]
-    resources = [module.dynamo_db.dynamo_db_table_arn]
+    resources = [module.dynamo_db.table_arn]
     effect = "Allow"
   }
 }
@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "get_original_url" {
   }
   statement {
     actions   = ["dynamodb:GetItem"]
-    resources = [module.dynamo_db.dynamo_db_table_arn]
+    resources = [module.dynamo_db.table_arn]
     effect = "Allow"
   }
 }
@@ -82,4 +82,37 @@ module "lambda_get_original_url" {
   handler = "lambda_get_original_url/main.lambda_handler"
   environment_variables = {}
   resource_tags = var.resource_tags
+}
+
+#===============================================
+# API Gateway
+#===============================================
+module "api_gateway" {
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=terraform-api-gateway-module"
+
+  api_gateway_name = "url-shortener-app-${var.region}-${var.env}"
+}
+
+module "api_gateway_resource_create_short_url" {
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway_resource?ref=terraform-api-gateway-module"
+
+  api_gateway_id = module.api_gateway.id
+  api_gateway_root_resource_id = module.api_gateway.root_resource_id
+  api_gateway_execution_arn = module.api_gateway.execution_arn
+  path_part = "short-url"
+  method = "POST"
+  lambda_invoke_arn = module.lambda_create_short_url.lambda_invoke_arn
+  lambda_function_name = module.lambda_create_short_url.lambda_name
+}
+
+module "api_gateway_resource_get_original_url" {
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway_resource?ref=terraform-api-gateway-module"
+
+  api_gateway_id = module.api_gateway.id
+  api_gateway_root_resource_id = module.api_gateway.root_resource_id
+  api_gateway_execution_arn = module.api_gateway.execution_arn
+  path_part = "{url_hash}"
+  method = "GET"
+  lambda_invoke_arn = module.lambda_get_original_url.lambda_invoke_arn
+  lambda_function_name = module.lambda_get_original_url.lambda_name
 }
