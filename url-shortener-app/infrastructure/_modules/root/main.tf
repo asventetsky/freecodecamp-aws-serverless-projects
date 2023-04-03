@@ -95,7 +95,7 @@ module "lambda_get_original_url" {
 # API Gateway #
 #=============#
 module "api_gateway" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=ffdf1650049a96c9698b8da18f27a37eb7857bce"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=18afbd80c39696171a67acf2333be7705cba3059"
 
   api_gateway_name = "url-shortener-app-${var.region}-${var.env}"
   stage = "dev"
