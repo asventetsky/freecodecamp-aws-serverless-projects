@@ -8,9 +8,9 @@ module "dynamo_db" {
   resource_tags = var.resource_tags
 }
 
-#===============================================
-# CREATE SHORT URL: lambda function and iam role
-#===============================================
+#================================================#
+# CREATE SHORT URL: lambda function and iam role #
+#================================================#
 data "aws_iam_policy_document" "create_short_url" {
   statement {
     actions   = ["logs:CreateLogStream", "logs:PutLogEvents"]
@@ -42,13 +42,16 @@ module "lambda_create_short_url" {
   path_to_archive = "./../../../../../../source/target/${var.lambda_create_short_url_artifact_name}"
   lambda_role_arn = module.lambda_create_short_url_iam_role.arn
   handler = "lambda_create_short_url/main.lambda_handler"
-  environment_variables = {}
   resource_tags = var.resource_tags
+  environment_variables = {
+    REGION = var.region
+    SHORT_URLS_TABLE_NAME = module.dynamo_db.table_name
+  }
 }
 
-#===============================================
-# GET ORIGINAL URL: lambda function and iam role
-#===============================================
+#================================================#
+# GET ORIGINAL URL: lambda function and iam role #
+#================================================#
 data "aws_iam_policy_document" "get_original_url" {
   statement {
     actions   = ["logs:CreateLogStream", "logs:PutLogEvents"]
@@ -80,15 +83,19 @@ module "lambda_get_original_url" {
   path_to_archive = "./../../../../../../source/target/${var.lambda_get_original_url_artifact_name}"
   lambda_role_arn = module.lambda_get_original_url_iam_role.arn
   handler = "lambda_get_original_url/main.lambda_handler"
-  environment_variables = {}
   resource_tags = var.resource_tags
+
+  environment_variables = {
+    REGION = var.region
+    SHORT_URLS_TABLE_NAME = module.dynamo_db.table_name
+  }
 }
 
-#===============================================
-# API Gateway
-#===============================================
+#=============#
+# API Gateway #
+#=============#
 module "api_gateway" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=ffdf1650049a96c9698b8da18f27a37eb7857bce"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=18afbd80c39696171a67acf2333be7705cba3059"
 
   api_gateway_name = "url-shortener-app-${var.region}-${var.env}"
   stage = "dev"

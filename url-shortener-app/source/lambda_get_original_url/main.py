@@ -23,7 +23,7 @@ def lambda_handler(event, context):
 def extract_url_hash(event):
     """Extracts url hash from the request"""
 
-    url_hash = event["pathParameters"]["hash"]
+    url_hash = event["pathParameters"]["url_hash"]
 
     logging.info("Url hash: %s", url_hash)
 

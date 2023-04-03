@@ -4,7 +4,11 @@
 
 import unittest
 from unittest.mock import patch
-from lambda_create_short_url.main import lambda_handler
+
+with patch.dict(
+    "os.environ", {"SHORT_URLS_TABLE_NAME": "short-url", "REGION": "region"}
+):
+    from lambda_create_short_url.main import lambda_handler
 
 
 class TestLambdaCreateShortUrl(unittest.TestCase):

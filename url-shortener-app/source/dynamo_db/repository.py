@@ -1,12 +1,13 @@
 """ Access to the database """
 
 import logging
+import os
 
 import botocore
 import boto3
 
-client = boto3.client("dynamodb", region_name="eu-central-1")
-TABLE_NAME = "short-urls"
+client = boto3.client("dynamodb", region_name=os.environ["REGION"])
+TABLE_NAME = os.environ["SHORT_URLS_TABLE_NAME"]
 
 logging.getLogger().setLevel(logging.INFO)
 

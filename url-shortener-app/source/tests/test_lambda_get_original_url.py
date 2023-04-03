@@ -4,7 +4,11 @@
 
 import unittest
 from unittest.mock import patch
-from lambda_get_original_url import main
+
+with patch.dict(
+    "os.environ", {"SHORT_URLS_TABLE_NAME": "short-url", "REGION": "region"}
+):
+    from lambda_get_original_url import main
 
 
 class TestLambdaGetOriginalUrl(unittest.TestCase):
@@ -16,7 +20,7 @@ class TestLambdaGetOriginalUrl(unittest.TestCase):
 
         mock_get_record.return_value = "https://url"
 
-        event = {"pathParameters": {"hash": "123456"}}
+        event = {"pathParameters": {"url_hash": "123456"}}
         actual_response = main.lambda_handler(event, {})
 
         expected_response = {
