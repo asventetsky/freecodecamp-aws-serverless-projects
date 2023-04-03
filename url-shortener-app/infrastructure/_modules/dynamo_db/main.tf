@@ -5,11 +5,11 @@ resource "aws_dynamodb_table" "short_urls" {
   write_capacity= "30"
 
   attribute {
-    name = "hash"
+    name = "url_hash"
     type = "S"
   }
 
-  hash_key = "hash"
+  hash_key = "url_hash"
 
   tags = var.resource_tags
 }
