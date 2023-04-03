@@ -26,10 +26,7 @@ main() {
   )
 
   echo "Adding source code to the package."
-  (
-    cd "$LAMBDA_SOURCE_DIR" || exit
-    zip -q -g ../target/$LAMBDA_ARTIFACT_NAME $LAMBDA_MODULES
-  )
+  zip -q -g -r target/$LAMBDA_ARTIFACT_NAME $LAMBDA_MODULES
 }
 
 main "$@"; exit

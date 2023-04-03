@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "create_short_url" {
   }
   statement {
     actions   = ["dynamodb:PutItem"]
-    resources = [module.dynamo_db.dynamo_db_table_arn]
+    resources = [module.dynamo_db.table_arn]
     effect = "Allow"
   }
 }
@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "get_original_url" {
   }
   statement {
     actions   = ["dynamodb:GetItem"]
-    resources = [module.dynamo_db.dynamo_db_table_arn]
+    resources = [module.dynamo_db.table_arn]
     effect = "Allow"
   }
 }
@@ -82,4 +82,30 @@ module "lambda_get_original_url" {
   handler = "lambda_get_original_url/main.lambda_handler"
   environment_variables = {}
   resource_tags = var.resource_tags
+}
+
+#===============================================
+# API Gateway
+#===============================================
+module "api_gateway" {
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=ffdf1650049a96c9698b8da18f27a37eb7857bce"
+
+  api_gateway_name = "url-shortener-app-${var.region}-${var.env}"
+  stage = "dev"
+
+  integrations = {
+    "POST /short-url" = {
+      method = "POST"
+      path_part = "short-url"
+      lambda_invoke_arn = module.lambda_create_short_url.lambda_invoke_arn
+      lambda_function_name = module.lambda_create_short_url.lambda_name
+    }
+
+    "GET /{url_hash}" = {
+      method = "GET"
+      path_part = "{url_hash}"
+      lambda_invoke_arn = module.lambda_get_original_url.lambda_invoke_arn
+      lambda_function_name = module.lambda_get_original_url.lambda_name
+    }
+  }
 }
