@@ -91,28 +91,19 @@ module "api_gateway" {
   source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=terraform-api-gateway-module"
 
   api_gateway_name = "url-shortener-app-${var.region}-${var.env}"
-}
 
-module "api_gateway_resource_create_short_url" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway_resource?ref=terraform-api-gateway-module"
-
-  api_gateway_id = module.api_gateway.id
-  api_gateway_root_resource_id = module.api_gateway.root_resource_id
-  api_gateway_execution_arn = module.api_gateway.execution_arn
-  path_part = "short-url"
-  method = "POST"
-  lambda_invoke_arn = module.lambda_create_short_url.lambda_invoke_arn
-  lambda_function_name = module.lambda_create_short_url.lambda_name
-}
-
-module "api_gateway_resource_get_original_url" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway_resource?ref=terraform-api-gateway-module"
-
-  api_gateway_id = module.api_gateway.id
-  api_gateway_root_resource_id = module.api_gateway.root_resource_id
-  api_gateway_execution_arn = module.api_gateway.execution_arn
-  path_part = "{url_hash}"
-  method = "GET"
-  lambda_invoke_arn = module.lambda_get_original_url.lambda_invoke_arn
-  lambda_function_name = module.lambda_get_original_url.lambda_name
+  integrations = [
+    {
+      method = "POST"
+      path_part = "short-url"
+      lambda_invoke_arn = module.lambda_create_short_url.lambda_invoke_arn
+      lambda_function_name = module.lambda_create_short_url.lambda_name
+    },
+    {
+      method = "GET"
+      path_part = "{url_hash}"
+      lambda_invoke_arn = module.lambda_create_short_url.lambda_invoke_arn
+      lambda_function_name = module.lambda_create_short_url.lambda_name
+    }
+  ]
 }
