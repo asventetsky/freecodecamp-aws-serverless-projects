@@ -55,9 +55,9 @@ jobs:
           terragrunt --version
 
       - name: "📦 prepare common_vars file for terragrunt"
-          run: |
-            (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
-            cat ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
+        run: |
+          (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
+          cat ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
 
       - name: "🔍 run terragrunt stuff"
         run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt destroy -auto-approve
