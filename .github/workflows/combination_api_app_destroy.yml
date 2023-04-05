@@ -12,7 +12,7 @@ jobs:
 
   build-lambda-api-composer:
     name: Build lambda api composer
-    needs: test
+    needs: install-dependencies
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@6bd5d4e22d58eaf7cfd69669f8888885a0700e05
     with:
       application: ${{ vars.COMBINATION_API_APP }}
@@ -22,6 +22,7 @@ jobs:
 
   destroy:
     name: Destroy application DEV
+    needs: build-lambda-api-composer
     environment: dev
     runs-on: ubuntu-latest
     timeout-minutes: 10
