@@ -37,7 +37,7 @@ jobs:
       - name: "💾 fetch lambda artifact"
         uses: actions/cache@v3
         with:
-          key: ${LAMBDA_ARTIFACT_NAME}
+          key: ${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
           path: ./${{ vars.COMBINATION_API_APP }}/source/target/${LAMBDA_ARTIFACT_NAME}
           fail-on-cache-miss: true
 
