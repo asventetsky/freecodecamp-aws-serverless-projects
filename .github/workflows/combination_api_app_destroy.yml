@@ -4,25 +4,41 @@ on:
   workflow_dispatch:
 
 jobs:
+  install-dependencies:
+    name: Install dependencies
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@b3892a9ea001951a4e89fd4ad2ab8c0e6b2d0b38
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
+
+  build-lambda-api-composer:
+    name: Build lambda api composer
+    needs: test
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@6bd5d4e22d58eaf7cfd69669f8888885a0700e05
+    with:
+      application: ${{ vars.COMBINATION_API_APP }}
+      lambda-name: lambda-api-composer
+      # TODO find a solution to bind lambda source directory to all required file in archive
+      files-folders-to-add: "api_composer __init__.py"
+
   destroy:
     name: Destroy application DEV
     environment: dev
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+      LAMBDA_ARTIFACT_NAME: ${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
 
-      - name: "🔧 install python 3.9"
-        uses: actions/setup-python@v4
+      - name: "💾 fetch lambda artifact"
+        uses: actions/cache@v3
         with:
-          python-version: '3.9'
-
-      - name: "📦 install dependencies"
-        run: cd combination-api-app/source && pip install -r requirements.txt
-
-      - name: "🔍 run build"
-        run: chmod +x .github/workflows/scripts/combination-api-app/build.sh && .github/workflows/scripts/combination-api-app/build.sh
+          key: ${LAMBDA_ARTIFACT_NAME}
+          path: ./${{ vars.COMBINATION_API_APP }}/source/target/${LAMBDA_ARTIFACT_NAME}
+          fail-on-cache-miss: true
 
       - name: "🔧 install terraform 1.3.8"
         uses: hashicorp/setup-terraform@v2
@@ -30,11 +46,18 @@ jobs:
           terraform_version: 1.3.8
 
       - name: "🔧 install terragrunt 0.43.2"
-        run: chmod +x .github/workflows/scripts/combination-api-app/terragrunt_install.sh && .github/workflows/scripts/combination-api-app/terragrunt_install.sh
+        run: |
+          curl -LJO https://github.com/gruntwork-io/terragrunt/releases/download/v0.43.2/terragrunt_linux_amd64
+          mv terragrunt_linux_amd64 terragrunt
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin
+          ls -l /usr/local/bin
+          terragrunt --version
+
+      - name: "📦 prepare common_vars file for terragrunt"
+          run: |
+            (echo ""; echo "lambda_artifact_name: \"${LAMBDA_ARTIFACT_NAME}\"") >> ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
+            cat ./${{ vars.COMBINATION_API_APP }}/infrastructure/environments/common_vars.yaml
 
       - name: "🔍 run terragrunt stuff"
         run: cd combination-api-app/infrastructure/environments/dev && terragrunt init && terragrunt destroy -auto-approve
-
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
