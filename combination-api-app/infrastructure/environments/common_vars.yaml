@@ -1,3 +1,2 @@
 app_name: "combination-api-app"
 s3_bucket_prefix: "freecodecamp-aws-serverless-projects-tf-state"
-lambda_api_composer_artifact_name: "lambda_api_composer-local.zip"
