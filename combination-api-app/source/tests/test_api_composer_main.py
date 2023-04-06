@@ -4,14 +4,14 @@
 
 import unittest
 from unittest.mock import patch
-from api_composer.main import lambda_handler
+from lambda_api_composer.main import lambda_handler
 
 
 class TestApiComposerMain(unittest.TestCase):
     """Represent unit tests for main module"""
 
-    @patch("api_composer.main.fetch_joke")
-    def test_lambda_handler_fetch_joke_sucsess(self, mock_fetch_joke):
+    @patch("lambda_api_composer.main.fetch_joke")
+    def test_lambda_handler_fetch_joke_success(self, mock_fetch_joke):
         """Unit test for lambda handler function"""
 
         mock_fetch_joke.return_value = (
@@ -31,7 +31,7 @@ class TestApiComposerMain(unittest.TestCase):
 
         self.assertEqual(actual_response, expected_response)
 
-    @patch("api_composer.main.fetch_joke")
+    @patch("lambda_api_composer.main.fetch_joke")
     def test_lambda_handler_fetch_joke_failure(self, mock_fetch_joke):
         """Unit test for lambda handler function"""
 

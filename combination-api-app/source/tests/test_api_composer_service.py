@@ -5,13 +5,13 @@
 import os
 import unittest
 from unittest.mock import MagicMock, patch
-from api_composer.service import fetch_joke
+from lambda_api_composer.service import fetch_joke
 
 
 class TestApiComposerService(unittest.TestCase):
     """Represent unit tests for service module"""
 
-    @patch("api_composer.service.requests")
+    @patch("lambda_api_composer.service.requests")
     @patch.dict(os.environ, {"JOKES_URL": "https://url", "JOKES_TIMEOUT": "5"})
     def test_fetch_joke_success_response(self, mock_requests):
         """Unit test for fetch joke function"""
@@ -34,7 +34,7 @@ class TestApiComposerService(unittest.TestCase):
 
         self.assertEqual(actual_response, expected_response)
 
-    @patch("api_composer.service.requests")
+    @patch("lambda_api_composer.service.requests")
     @patch.dict(os.environ, {"JOKES_URL": "https://url", "JOKES_TIMEOUT": "abc"})
     def test_fetch_joke_invalid_timeout_value(self, mock_requests):
         """Unit test for lambda handler function"""
@@ -53,7 +53,7 @@ class TestApiComposerService(unittest.TestCase):
 
         self.assertEqual(actual_response, None)
 
-    @patch("api_composer.service.requests")
+    @patch("lambda_api_composer.service.requests")
     @patch.dict(os.environ, {"JOKES_URL": "https://url", "JOKES_TIMEOUT": "5"})
     def test_fetch_joke_exception_fetching_joke(self, mock_requests):
         """Unit test for lambda handler function"""
@@ -63,7 +63,7 @@ class TestApiComposerService(unittest.TestCase):
 
         self.assertEqual(actual_response, None)
 
-    @patch("api_composer.service.requests")
+    @patch("lambda_api_composer.service.requests")
     @patch.dict(os.environ, {"JOKES_URL": "https://url", "JOKES_TIMEOUT": "5"})
     def test_fetch_joke_non_200_response_status_code(self, mock_requests):
         """Unit test for lambda handler function"""
@@ -80,7 +80,7 @@ class TestApiComposerService(unittest.TestCase):
 
         self.assertEqual(actual_response, None)
 
-    @patch("api_composer.service.requests")
+    @patch("lambda_api_composer.service.requests")
     @patch.dict(os.environ, {"JOKES_URL": "https://url", "JOKES_TIMEOUT": "5"})
     def test_fetch_joke_invalid_json_response(self, mock_requests):
         """Unit test for lambda handler function"""
