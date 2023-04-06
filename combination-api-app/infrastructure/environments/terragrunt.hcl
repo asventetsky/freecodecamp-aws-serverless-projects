@@ -27,7 +27,7 @@ locals {
   jokes_url = local.env_vars.jokes_url
   jokes_timeout = local.env_vars.jokes_timeout
   app_name = local.common_vars.app_name
-  lambda_artifact_name = local.common_vars.lambda_artifact_name
+  lambda_api_composer_artifact_name = local.common_vars.lambda_api_composer_artifact_name
   s3_bucket_prefix = local.common_vars.s3_bucket_prefix
 }
 
@@ -53,7 +53,7 @@ inputs = {
   region = "${local.region}"
   env = "${local.env}"
   app_name = "${local.app_name}"
-  lambda_artifact_name = "${local.lambda_artifact_name}"
+  lambda_api_composer_artifact_name = "${local.lambda_api_composer_artifact_name}"
   jokes_url = "${local.jokes_url}"
   jokes_timeout = "${local.jokes_timeout}"
   resource_tags = {
