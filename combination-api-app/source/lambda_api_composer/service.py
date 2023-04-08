@@ -1,3 +1,5 @@
+# pylint: disable=fixme
+
 """ Service for sending request to external resource """
 
 import logging
@@ -13,8 +15,7 @@ def fetch_joke():
     try:
         response = _fetch_response()
         return _extract_joke(response)
-    # TODO: refactor to use user-defined ServiceError
-    except ValueError:
+    except ValueError:  # TODO: refactor to use user-defined ServiceError
         return None
 
 
