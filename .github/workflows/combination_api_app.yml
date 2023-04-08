@@ -37,7 +37,7 @@ jobs:
 
   deploy-dev:
     name: Deploy application to DEV
-    needs: build-lambda-api-composer
+    needs: build
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@1c71f0bcea456cecbedfc8b67cc540144217bb8d
     with:
       application: ${{ vars.COMBINATION_API_APP }}
