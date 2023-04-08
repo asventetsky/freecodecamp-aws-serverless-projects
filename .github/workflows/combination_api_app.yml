@@ -28,15 +28,11 @@ jobs:
     with:
       application: ${{ vars.COMBINATION_API_APP }}
 
-  build-lambda-api-composer:
-    name: Build lambda api composer
-    needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@python-reusable-deploy-workflow
+  build:
+    name: Build application
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@1c71f0bcea456cecbedfc8b67cc540144217bb8d
     with:
       application: ${{ vars.COMBINATION_API_APP }}
-      lambda-name: lambda-api-composer
-      # TODO find a solution to bind lambda source directory to all required file in archive
-      files-folders-to-add: "api_composer __init__.py"
 
   deploy-dev:
     name: Deploy application to DEV
@@ -44,7 +40,7 @@ jobs:
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@python-reusable-deploy-workflow
     with:
       application: ${{ vars.COMBINATION_API_APP }}
-      lambda-artifact-name: ${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
+      lambdas-common-vars: ${{ needs.build.outputs.lambdas-common-vars }}
       environment: dev
     secrets:
       aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}

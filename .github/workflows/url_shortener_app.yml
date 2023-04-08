@@ -24,36 +24,12 @@ jobs:
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
 
-  pre-built:
-    name: Prepare lambdas with dependant modules variable
-    needs: test
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      lambdas-with-dependant-modules: ${{ steps.construct-variable.outputs.lambdas-with-dependant-modules }}
-    steps:
-      - name: "🔍 construct variable"
-        id: construct-variable
-        run: |
-          LAMBDAS_WITH_DEPENDANT_MODULES=$(
-          (
-          cat <<-END
-          lambda_create_short_url=lambda_create_short_url,dynamo_db,exception,__init__.py
-          lambda_get_original_url=lambda_get_original_url,dynamo_db,exception,__init__.py
-          END
-          ) | tr '\n' ';'
-          )
-
-          echo "LAMBDAS_WITH_DEPENDANT_MODULES=${LAMBDAS_WITH_DEPENDANT_MODULES}"
-          echo "lambdas-with-dependant-modules=${LAMBDAS_WITH_DEPENDANT_MODULES}" >> "$GITHUB_OUTPUT"
-
   build:
     name: Build application
     needs: pre-built
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@1c71f0bcea456cecbedfc8b67cc540144217bb8d
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
-      lambdas-with-dependant-modules: ${{needs.pre-built.outputs.lambdas-with-dependant-modules}}
 
   deploy-dev:
     name: Deploy application to DEV
