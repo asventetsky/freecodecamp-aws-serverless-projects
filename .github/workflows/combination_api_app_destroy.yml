@@ -1,4 +1,4 @@
-name: Destroy Combination API app
+name: Combination API App CLEAR
 
 on:
   workflow_dispatch:
@@ -10,19 +10,16 @@ jobs:
     with:
       application: ${{ vars.COMBINATION_API_APP }}
 
-  build-lambda-api-composer:
-    name: Build lambda api composer
-    needs: install-dependencies
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@6bd5d4e22d58eaf7cfd69669f8888885a0700e05
+  build:
+    name: Build application
+    needs: test
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@beddaa1707806e9a5c9671f79453763629d0d5ac
     with:
       application: ${{ vars.COMBINATION_API_APP }}
-      lambda-name: lambda-api-composer
-      # TODO find a solution to bind lambda source directory to all required file in archive
-      files-folders-to-add: "api_composer __init__.py"
 
   destroy:
     name: Destroy application DEV
-    needs: build-lambda-api-composer
+    needs: build
     environment: dev
     runs-on: ubuntu-latest
     timeout-minutes: 10

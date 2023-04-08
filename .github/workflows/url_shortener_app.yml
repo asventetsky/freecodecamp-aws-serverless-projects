@@ -26,8 +26,8 @@ jobs:
 
   build:
     name: Build application
-    needs: pre-built
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@1c71f0bcea456cecbedfc8b67cc540144217bb8d
+    needs: test
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@beddaa1707806e9a5c9671f79453763629d0d5ac
     with:
       application: ${{ vars.URL_SHORTENER_APP }}
 
