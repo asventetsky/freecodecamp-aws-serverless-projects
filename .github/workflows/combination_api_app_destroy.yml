@@ -34,8 +34,8 @@ jobs:
       - name: "💾 fetch lambda artifact"
         uses: actions/cache@v3
         with:
-          key: ${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
-          path: ./${{ vars.COMBINATION_API_APP }}/source/target/${{ needs.build-lambda-api-composer.outputs.lambda-artifact-name }}
+          key: ${{ vars.COMBINATION_API_APP }}-artifacts-${{ github.run_number }}
+          path: ./${{ inputs.application }}/source/target
           fail-on-cache-miss: true
 
       - name: "🔧 install terraform 1.3.8"
