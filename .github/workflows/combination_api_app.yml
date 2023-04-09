@@ -31,14 +31,14 @@ jobs:
   build:
     name: Build application
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@beddaa1707806e9a5c9671f79453763629d0d5ac
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_zip_archive.yml@864b36cd678156b3322dfa6cd19d7265af74e382
     with:
       application: ${{ vars.COMBINATION_API_APP }}
 
   deploy-dev:
     name: Deploy application to DEV
     needs: build
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@1c71f0bcea456cecbedfc8b67cc540144217bb8d
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy.yml@864b36cd678156b3322dfa6cd19d7265af74e382
     with:
       application: ${{ vars.COMBINATION_API_APP }}
       lambdas-common-vars: ${{ needs.build.outputs.lambdas-common-vars }}
