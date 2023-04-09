@@ -25,7 +25,7 @@ jobs:
   clear:
     name: Clear application
     needs: build
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_clear.yml@680e4872f8f87c1c106bc5ae0cdccd94929ddbfd
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_clear.yml@b4eab12da4e513db687d117474c906419709edb5
     with:
       application: ${{ vars.COMBINATION_API_APP }}
       lambdas-common-vars: ${{ needs.build.outputs.lambdas-common-vars }}
