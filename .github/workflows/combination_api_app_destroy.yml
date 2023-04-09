@@ -3,8 +3,8 @@ name: Combination API App CLEAR
 on:
   workflow_dispatch:
     inputs:
-      name:
-        type: environment
+      environment:
+        type: choice
         options:
           - dev
 
