@@ -38,9 +38,14 @@ module "lambda_api_composer" {
 module "api_gateway" {
   source = "../../../../../_modules/api_gateway_v2"
 
-  region = var.region
-  env = var.env
-  app_name = var.app_name
-  lambda_name = module.lambda_api_composer.lambda_name
-  lambda_invoke_arn = module.lambda_api_composer.lambda_invoke_arn
+  api_gateway_name = "combination-api-app-${var.region}-${var.env}"
+  protocol_type = "HTTP"
+  stage = var.env
+
+  integrations = {
+    "GET /jokes" = {
+      lambda_invoke_arn = module.lambda_api_composer.lambda_invoke_arn
+      lambda_function_name = module.lambda_api_composer.lambda_name
+    }
+  }
 }

@@ -1,13 +1,16 @@
-variable "region" {}
+variable "api_gateway_name" {}
 
-variable "env" {}
-
-variable "app_name" {}
-
-variable "lambda_name" {}
-
-variable "path" {
-  default = "/jokes"
+variable "protocol_type" {
+  description = "Possible values are `HTTP` and `WEBSOCKET`"
 }
 
-variable "lambda_invoke_arn" {}
+variable "stage" {}
+
+variable "integrations" {
+  description = "List of API Gateway routes with integrations"
+  type        = map(object({
+    lambda_invoke_arn = string
+    lambda_function_name = string
+  }))
+  default = {}
+}
