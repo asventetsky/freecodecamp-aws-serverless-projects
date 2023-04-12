@@ -95,7 +95,7 @@ module "lambda_get_original_url" {
 # API Gateway #
 #=============#
 module "api_gateway" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=b53075c7"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=fd17f50c0e0ae0861e71a999eb307b6d428a8637"
 
   api_gateway_name = "url-shortener-app-${var.region}-${var.env}"
   cognito_auth = true
