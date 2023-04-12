@@ -1,9 +1,6 @@
 name: URL Shortener App CLEAR
 
 on:
-  push:
-    branches:
-      - "url-shortener-app-clear-workflow"
   workflow_dispatch:
     inputs:
       environment:
