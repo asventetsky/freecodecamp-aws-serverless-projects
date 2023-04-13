@@ -42,6 +42,11 @@ module "api_gateway" {
   protocol_type = "HTTP"
   stage = var.env
 
+  cognito_auth = {
+    "enable": true
+    "confirm_email_option": "CONFIRM_WITH_LINK" # or CONFIRM_WITH_LINK
+  }
+
   integrations = {
     "GET /jokes" = {
       lambda_invoke_arn = module.lambda_api_composer.lambda_invoke_arn
