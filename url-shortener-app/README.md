@@ -40,17 +40,17 @@ aws cognito-idp sign-up \
 ### Confirm Cognito user
 ```bash
 aws cognito-idp confirm-sign-up \
-    --client-id [user_pool_client_id] \
-    --username=[username] \
-    --confirmation-code [verification_code_from_email]
+  --client-id [user_pool_client_id] \
+  --username=[username] \
+  --confirmation-code [verification_code_from_email]
 ```
 
 ### Get token
 ```bash
 aws cognito-idp initiate-auth \
- --client-id [user_pool_client_id] \
- --auth-flow USER_PASSWORD_AUTH \
- --auth-parameters USERNAME=[username],PASSWORD=[password] \
- --query 'AuthenticationResult.IdToken' \
- --output text
+  --client-id [user_pool_client_id] \
+  --auth-flow USER_PASSWORD_AUTH \
+  --auth-parameters USERNAME=[username],PASSWORD=[password] \
+  --query 'AuthenticationResult.IdToken' \
+  --output text
 ```
