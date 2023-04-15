@@ -1,0 +1,1 @@
+lambda-reminder-create=lambda-reminder-create,dynamo_db,exception,__init__.py
