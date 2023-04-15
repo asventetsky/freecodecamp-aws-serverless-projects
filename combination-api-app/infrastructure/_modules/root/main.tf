@@ -36,7 +36,7 @@ module "lambda_api_composer" {
 }
 
 module "api_gateway" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway_v2/?ref=2c9bc639428fc3364fd0334eaa4cf9c59a2e097e"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway_v2/?ref=e6f2b01e0ecca2e4b8637a99d1a18305c7b11429"
 
   api_gateway_name = "combination-api-app-${var.region}-${var.env}"
   protocol_type = "HTTP"
