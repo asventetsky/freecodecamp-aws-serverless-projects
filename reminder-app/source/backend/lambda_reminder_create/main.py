@@ -4,6 +4,10 @@ import uuid
 import json
 from dynamo_db.repository import put_record
 from exception.service_exception import ServiceError
+from common.response_constructor import (
+    construct_success_response,
+    construct_error_response,
+)
 
 
 def handler(event, context):
@@ -13,9 +17,9 @@ def handler(event, context):
         reminder = _construct_reminder(event)
         reminder["id"] = str(uuid.uuid4())
         put_record(reminder)
-        return _construct_response(reminder)
+        return construct_success_response(reminder)
     except ServiceError as error:
-        return _construct_error_response(error.message)
+        return construct_error_response(error.message)
 
 
 def _construct_reminder(event):
@@ -43,31 +47,3 @@ def _parse_body(string_body):
         raise ServiceError(
             f"Unable to parse body: {error}",
         )
-
-
-def _construct_error_response(error_message):
-    """Constructs error response"""
-
-    return {
-        "statusCode": 500,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-        "body": json.dumps({"error": error_message}),
-    }
-
-
-def _construct_response(reminder):
-    """Constructs final response"""
-
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-        "body": json.dumps(reminder),
-    }
