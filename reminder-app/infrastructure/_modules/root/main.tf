@@ -52,3 +52,23 @@ module "lambda_reminder_create" {
 
   resource_tags = var.resource_tags
 }
+
+#=============#
+# API Gateway #
+#=============#
+module "api_gateway" {
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=fd17f50c0e0ae0861e71a999eb307b6d428a8637"
+
+  api_gateway_name = "reminder-app-${var.region}-${var.env}"
+  cognito_auth = false
+  stage = var.env
+
+  integrations = {
+    "POST /reminder" = {
+      method = "POST"
+      path_part = "reminder"
+      lambda_invoke_arn = module.lambda_reminder_create.lambda_invoke_arn
+      lambda_function_name = module.lambda_reminder_create.lambda_name
+    }
+  }
+}
