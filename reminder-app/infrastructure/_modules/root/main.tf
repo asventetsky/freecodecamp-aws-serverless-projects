@@ -42,8 +42,7 @@ module "lambda_reminder_create" {
   env = var.env
   lambda_role_arn = module.lambda_reminder_create_iam_role.arn
   ecr_repository_uri = var.ecr_repository_uri
-  # TODO: move to variable
-  tag = "lambda_reminder_create_0.0.2"
+  tag = "lambda_reminder_create_${var.lambda_reminder_create_version}"
 
   environment_variables = {
     REGION = var.region
@@ -57,7 +56,7 @@ module "lambda_reminder_create" {
 # API Gateway #
 #=============#
 module "api_gateway" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=5663484b"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=5663484b343d592cb9fb364d61a3d87cd43aa9d0"
 
   api_gateway_name = "reminder-app-${var.region}-${var.env}"
   cognito_auth = false
