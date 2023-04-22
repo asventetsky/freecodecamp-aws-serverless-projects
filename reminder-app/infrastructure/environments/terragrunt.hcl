@@ -25,6 +25,8 @@ locals {
   env = local.parsed.env
   region = local.env_vars.region
   ecr_repository_uri = local.env_vars.ecr_repository_uri
+  lambda_reminder_create_version = local.env_vars.lambda_reminder_create_version
+
   app_name = local.common_vars.app_name
   s3_bucket_prefix = local.common_vars.s3_bucket_prefix
 }
@@ -52,6 +54,7 @@ inputs = {
   env = "${local.env}"
   app_name = "${local.app_name}"
   ecr_repository_uri = "${local.ecr_repository_uri}"
+  lambda_reminder_create_version = "${local.lambda_reminder_create_version}"
 
   resource_tags = {
     Application = "${local.app_name}",
