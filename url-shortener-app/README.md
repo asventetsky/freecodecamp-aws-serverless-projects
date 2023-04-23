@@ -6,7 +6,7 @@ The idea behind it is to create archives for lambdas and prepare
 local environment to run Terragrunt stuff (like `terragrunt init`, `terragrunt plan` etc.)
 In the project's `source` directory run:
 ````bash
-../../scripts/setup_local_terragrunt_deployment.sh
+../../scripts/setup_lambda_zip_local_deployment.sh
 ````
 Scrip is used to install required dependencies (in `venv` folder),
 create lambda archives based on `lambda_modules.txt` and update
