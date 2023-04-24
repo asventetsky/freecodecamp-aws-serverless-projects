@@ -8,6 +8,8 @@ variable "ecr_repository_uri" {}
 
 variable "lambda_reminder_create_version" {}
 
+variable "lambda_reminders_get_version" {}
+
 variable "resource_tags" {
   type = map(string)
 }
