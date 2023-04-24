@@ -1,1 +1,2 @@
 lambda_reminder_create:0.0.3=lambda_reminder_create,dynamo_db,exception,common,__init__.py
+lambda_reminders_get:0.0.1=lambda_reminders_get,dynamo_db,exception,common,__init__.py
