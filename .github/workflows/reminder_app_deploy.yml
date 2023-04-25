@@ -1,0 +1,25 @@
+name: Reminder App DEPLOY
+
+on:
+  push:
+    branches:
+      - "reminder-app-initial-ci-cd"
+  workflow_dispatch:
+
+jobs:
+  install-dependencies:
+    name: Install dependencies
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@6693a7fe
+    with:
+      application: ${{ vars.REMINDER_APP }}
+      source-dir: source/backend
+
+  # TODO: code quality
+
+  test:
+    name: Test application
+    needs: code-quality
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@6693a7fe
+    with:
+      application: ${{ vars.REMINDER_APP }}
+      source-dir: source/backend
