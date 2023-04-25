@@ -9,7 +9,7 @@ on:
 jobs:
   install-dependencies:
     name: Install dependencies
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@6693a7fe
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@6693a7feae551ba0ce97e208af3e922db15486cc
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
@@ -19,7 +19,7 @@ jobs:
   test:
     name: Test application
     needs: code-quality
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@6693a7fe
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@6693a7feae551ba0ce97e208af3e922db15486cc
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
