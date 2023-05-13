@@ -27,19 +27,21 @@ jobs:
   build:
     name: Build application
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@b4f43cdfae70f467e2752ccd6b711da7de2eb5a9
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@aa67ca00bde47124a5d981e87966c900529e8fcb
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
 
-#  deploy-dev:
-#    name: Deploy application to DEV
-#    needs: build
-#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@b143e50fbf6a42e7c4672f66b18964cef92c9124
-#    with:
-#      application: ${{ vars.REMINDER_APP }}
-#      lambdas-env-vars: ${{ needs.build.outputs.lambdas-common-vars }}
-#      environment: dev
-#    secrets:
-#      aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
-#      aws-secret-access-key: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
+  deploy-dev:
+    name: Deploy application to DEV
+    needs: build
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@aa67ca00bde47124a5d981e87966c900529e8fcb
+    with:
+      application: ${{ vars.REMINDER_APP }}
+      source-dir: source/backend
+      aws-region: ${{ env.REMINDER_APP_AWS_REGION }}
+      aws-repository-uri: ${{ env.REMINDER_APP_AWS_REPOSITORY_URI }}
+      environment: dev
+    secrets:
+      aws-access-key-id: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}

@@ -1,5 +1,2 @@
 region: "eu-central-1"
 ecr_repository_uri: "461420340031.dkr.ecr.eu-central-1.amazonaws.com/reminder-app-eu-central-1-dev"
-
-lambda_reminder_create_version: "0.0.3-local"
-lambda_reminders_get_version: "0.0.1-local"
