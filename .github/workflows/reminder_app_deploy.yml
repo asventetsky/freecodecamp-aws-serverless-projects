@@ -27,7 +27,19 @@ jobs:
   build:
     name: Build application
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@b143e50fbf6a42e7c4672f66b18964cef92c9124
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@c510deaad09895ae87fe9166da0d5e48713a7c54
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
+
+#  deploy-dev:
+#    name: Deploy application to DEV
+#    needs: build
+#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@b143e50fbf6a42e7c4672f66b18964cef92c9124
+#    with:
+#      application: ${{ vars.REMINDER_APP }}
+#      lambdas-env-vars: ${{ needs.build.outputs.lambdas-common-vars }}
+#      environment: dev
+#    secrets:
+#      aws-access-key-id: ${{ secrets.COMBINATION_API_APP_AWS_ACCESS_KEY_ID }}
+#      aws-secret-access-key: ${{ secrets.COMBINATION_API_APP_AWS_SECRET_ACCESS_KEY }}
