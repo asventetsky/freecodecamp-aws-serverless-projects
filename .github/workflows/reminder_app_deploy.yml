@@ -27,7 +27,7 @@ jobs:
   build:
     name: Build application
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@c510deaad09895ae87fe9166da0d5e48713a7c54
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@b4f43cdfae70f467e2752ccd6b711da7de2eb5a9
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
