@@ -39,8 +39,8 @@ jobs:
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
-      aws-region: ${{ env.REMINDER_APP_AWS_REGION }}
-      aws-repository-uri: ${{ env.REMINDER_APP_AWS_REPOSITORY_URI }}
+      aws-region: ${{ vars.REMINDER_APP_AWS_REGION }}
+      aws-repository-uri: ${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}
       environment: dev
     secrets:
       aws-access-key-id: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
