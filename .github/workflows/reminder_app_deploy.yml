@@ -13,6 +13,7 @@ jobs:
       matrix:
         environment: [ dev ]
     environment: ${{ matrix.environment }}
+    runs-on: ubuntu-latest
     steps:
       - name: "🔧 print environment specific variables"
         run: |
