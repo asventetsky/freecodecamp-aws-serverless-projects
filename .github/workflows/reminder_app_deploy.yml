@@ -7,42 +7,55 @@ on:
   workflow_dispatch:
 
 jobs:
-  install-dependencies:
-    name: Install dependencies
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
-    with:
-      application: ${{ vars.REMINDER_APP }}
-      source-dir: source/backend
+
+  example_environments_matrix:
+    strategy:
+      matrix:
+        environment: [ dev ]
+    environment: ${{ matrix.environment }}
+    steps:
+      - name: "🔧 print environment specific variables"
+        run: |
+          echo "aws_region=${{ vars.REMINDER_APP_AWS_REGION }}"
+          echo "repository=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}"
+
+
+#  install-dependencies:
+#    name: Install dependencies
+#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
+#    with:
+#      application: ${{ vars.REMINDER_APP }}
+#      source-dir: source/backend
 
   # TODO: code quality
 
-  test:
-    name: Test application
-    needs: install-dependencies
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
-    with:
-      application: ${{ vars.REMINDER_APP }}
-      source-dir: source/backend
-
-  build:
-    name: Build application
-    needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@aa67ca00bde47124a5d981e87966c900529e8fcb
-    with:
-      application: ${{ vars.REMINDER_APP }}
-      source-dir: source/backend
-
-  deploy-dev:
-    name: Deploy application to DEV
-    environment: dev
-    needs: build
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@bf1742b82e244bb29b2a541b51173741aa594ece
-    with:
-      application: ${{ vars.REMINDER_APP }}
-      source-dir: source/backend
-      aws-region: ${{ vars.REMINDER_APP_AWS_REGION }}
-      aws-repository-uri: ${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}
-      environment: dev
-    secrets:
-      aws-access-key-id: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}
+#  test:
+#    name: Test application
+#    needs: install-dependencies
+#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
+#    with:
+#      application: ${{ vars.REMINDER_APP }}
+#      source-dir: source/backend
+#
+#  build:
+#    name: Build application
+#    needs: test
+#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@aa67ca00bde47124a5d981e87966c900529e8fcb
+#    with:
+#      application: ${{ vars.REMINDER_APP }}
+#      source-dir: source/backend
+#
+#  deploy-dev:
+#    name: Deploy application to DEV
+#    environment: dev
+#    needs: build
+#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@bf1742b82e244bb29b2a541b51173741aa594ece
+#    with:
+#      application: ${{ vars.REMINDER_APP }}
+#      source-dir: source/backend
+#      aws-region: ${{ vars.REMINDER_APP_AWS_REGION }}
+#      aws-repository-uri: ${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}
+#      environment: dev
+#    secrets:
+#      aws-access-key-id: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
+#      aws-secret-access-key: ${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}
