@@ -34,8 +34,8 @@ jobs:
 
   deploy-dev:
     name: Deploy application to DEV
-    needs: build
     environment: dev
+    needs: build
     uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@2e7cd6707d97f76cbac7da717f8b4890d30b77dd
     with:
       application: ${{ vars.REMINDER_APP }}
