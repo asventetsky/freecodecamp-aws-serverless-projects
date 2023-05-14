@@ -11,7 +11,7 @@ jobs:
   example_environments_matrix:
     strategy:
       matrix:
-        environment: [ dev ]
+        environment: [ dev, stage ]
     environment: ${{ matrix.environment }}
     runs-on: ubuntu-latest
     steps:
