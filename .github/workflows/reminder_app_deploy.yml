@@ -55,6 +55,7 @@ jobs:
 
           echo "aws_repository_uri_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> $env_vars_file
 
+
 #          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
 #          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> $env_vars_file
 #
