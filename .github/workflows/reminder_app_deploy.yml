@@ -49,10 +49,10 @@ jobs:
         run: |
           echo "aws_region_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REGION }}" >> ./env_vars.txt
           echo "aws_repository_uri_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> ./env_vars.txt
-          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
-          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> ./env_vars.txt
-          echo "::add-mask::$REMINDER_APP_AWS_SECRET_ACCESS_KEY"
-          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_SECRET_ACCESS_KEY" >> ./env_vars.txt
+#          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
+#          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> ./env_vars.txt
+#          echo "::add-mask::$REMINDER_APP_AWS_SECRET_ACCESS_KEY"
+#          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_SECRET_ACCESS_KEY" >> ./env_vars.txt
 
       - name: "💾 save environment variables"
         uses: actions/cache@v3
@@ -74,6 +74,7 @@ jobs:
 
       - name: "🔧 print environment specific variables"
         run: |
+          cat ./env_vars.txt
           aws_region_dev=$(grep -rw './env_vars.txt' -e 'aws_region_dev' | sed 's/aws_region_dev=//g')
           echo "Finding aws_region_dev=$aws_region_dev"
           aws_repository_uri_dev=$(grep -rw './env_vars.txt' -e 'aws_repository_uri_dev' | sed 's/aws_repository_uri_dev=//g')
