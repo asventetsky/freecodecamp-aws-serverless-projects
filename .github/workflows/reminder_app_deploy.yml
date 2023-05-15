@@ -47,8 +47,9 @@ jobs:
           REMINDER_APP_AWS_ACCESS_KEY_ID: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
           REMINDER_APP_AWS_SECRET_ACCESS_KEY: ${{ secrets.REMINDER_APP_AWS_SECRET_ACCESS_KEY }}
         run: |
-          echo "aws_region_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REGION }}" >> ./env_vars.txt
-          echo "aws_repository_uri_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> ./env_vars.txt
+          env_vars_file="./env_vars_${{ matrix.environment }}.txt"
+          echo "aws_region_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REGION }}" >> $env_vars_file
+          echo "aws_repository_uri_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> $env_vars_file
 #          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
 #          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> ./env_vars.txt
 #          echo "::add-mask::$REMINDER_APP_AWS_SECRET_ACCESS_KEY"
@@ -58,7 +59,7 @@ jobs:
         uses: actions/cache@v3
         with:
           key: ${{ inputs.application }}-environment-variables-${{ github.run_number }}
-          path: ./env_vars.txt
+          path: ./env_vars_${{ matrix.environment }}.txt
 
   fetch-environment-variables:
     needs: prepare-environment-variables
@@ -69,7 +70,7 @@ jobs:
         uses: actions/cache@v3
         with:
           key: ${{ inputs.application }}-environment-variables-${{ github.run_number }}
-          path: ./env_vars.txt
+          path: ./env_vars_dev.txt
           fail-on-cache-miss: true
 
       - name: "🔧 print environment specific variables"
