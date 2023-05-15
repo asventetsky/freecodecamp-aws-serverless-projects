@@ -8,52 +8,55 @@ on:
 
 jobs:
 
-#  install-dependencies:
-#    name: Install dependencies
-#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
-#    with:
-#      application: ${{ vars.REMINDER_APP }}
-#      source-dir: source/backend
-#
-#  # TODO: code quality
-#
-#  test:
-#    name: Test application
-#    needs: install-dependencies
-#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
-#    with:
-#      application: ${{ vars.REMINDER_APP }}
-#      source-dir: source/backend
-#
-#  build:
-#    name: Build application
-#    needs: test
-#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@aa67ca00bde47124a5d981e87966c900529e8fcb
-#    with:
-#      application: ${{ vars.REMINDER_APP }}
-#      source-dir: source/backend
+  install-dependencies:
+    name: Install dependencies
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_install_dependencies.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
+    with:
+      application: ${{ vars.REMINDER_APP }}
+      source-dir: source/backend
+
+  # TODO: code quality
+
+  test:
+    name: Test application
+    needs: install-dependencies
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_test.yml@d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78
+    with:
+      application: ${{ vars.REMINDER_APP }}
+      source-dir: source/backend
+
+  build:
+    name: Build application
+    needs: test
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@aa67ca00bde47124a5d981e87966c900529e8fcb
+    with:
+      application: ${{ vars.REMINDER_APP }}
+      source-dir: source/backend
 
   prepare-environment-variables:
-#    needs: build
+    needs: build
     strategy:
       matrix:
-        environment: [ dev, stage ]
+        environment: [ dev ]
     environment: ${{ matrix.environment }}
     runs-on: ubuntu-latest
+    with:
+      application: ${{ vars.REMINDER_APP }}
     steps:
-      - name: "🔧 print environment specific variables"
+      - name: "🔧 construct environment variables file"
         id: construct
         env:
           REMINDER_APP_AWS_ACCESS_KEY_ID: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
           REMINDER_APP_AWS_SECRET_ACCESS_KEY: ${{ secrets.REMINDER_APP_AWS_SECRET_ACCESS_KEY }}
         run: |
           env_vars_file="./env_vars_${{ matrix.environment }}.txt"
+
           echo "aws_region_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REGION }}" >> $env_vars_file
           echo "aws_repository_uri_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> $env_vars_file
-#          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
-#          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> ./env_vars.txt
-#          echo "::add-mask::$REMINDER_APP_AWS_SECRET_ACCESS_KEY"
-#          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_SECRET_ACCESS_KEY" >> ./env_vars.txt
+          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
+          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> $env_vars_file
+          echo "::add-mask::$REMINDER_APP_AWS_SECRET_ACCESS_KEY"
+          echo "aws_secret_access_key_${{ matrix.environment }}=$REMINDER_APP_AWS_SECRET_ACCESS_KEY" >> $env_vars_file
 
       - name: "💾 save environment variables"
         uses: actions/cache@v3
@@ -61,36 +64,11 @@ jobs:
           key: ${{ inputs.application }}-environment-variables-${{ github.run_number }}
           path: ./env_vars_${{ matrix.environment }}.txt
 
-  fetch-environment-variables:
+  deploy-dev:
+    name: Deploy application to DEV
     needs: prepare-environment-variables
-    environment: dev
-    runs-on: ubuntu-latest
-    steps:
-      - name: "💾 fetch environment variables"
-        uses: actions/cache@v3
-        with:
-          key: ${{ inputs.application }}-environment-variables-${{ github.run_number }}
-          path: ./env_vars_dev.txt
-          fail-on-cache-miss: true
-
-      - name: "🔧 print environment specific variables"
-        run: |
-          cat ./env_vars_dev.txt
-          aws_region_dev=$(grep -rw './env_vars_dev.txt' -e 'aws_region_dev' | sed 's/aws_region_dev=//g')
-          echo "Finding aws_region_dev=$aws_region_dev"
-          aws_repository_uri_dev=$(grep -rw './env_vars_dev.txt' -e 'aws_repository_uri_dev' | sed 's/aws_repository_uri_dev=//g')
-          echo "Finding aws_repository_uri_dev=$aws_repository_uri_dev"
-
-#  deploy-dev:
-#    name: Deploy application to DEV
-#    needs: prepare-environment-variables
-#    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@bf1742b82e244bb29b2a541b51173741aa594ece
-#    with:
-#      application: ${{ vars.REMINDER_APP }}
-#      source-dir: source/backend
-#      aws-region: ${{ needs.prepare-environment-variables.outputs.aws-region-dev }}
-#      aws-repository-uri: ${{ needs.prepare-environment-variables.outputs.aws-repository-uri-dev }}
-#      environment: dev
-#    secrets:
-#      aws-access-key-id: ${{ needs.prepare-environment-variables.outputs.aws-access-key-id-dev }}
-#      aws-secret-access-key: ${{ needs.prepare-environment-variables.outputs.aws-secret-access-key-dev }}
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@321d78884ea5ad5130b62ae2ec0c0db0b304c475
+    with:
+      environment: dev
+      application: ${{ vars.REMINDER_APP }}
+      source-dir: source/backend
