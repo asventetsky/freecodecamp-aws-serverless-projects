@@ -74,10 +74,10 @@ jobs:
 
       - name: "🔧 print environment specific variables"
         run: |
-          echo "Finding aws-region-dev"
-          grep aws-region-dev ./env_vars.txt
-          echo "Finding aws-repository-uri-dev"
-          grep aws-repository-uri-dev ./env_vars.txt
+          aws-region-dev=$(grep -rw './env_vars.txt' -e 'aws-region-dev' | sed 's/aws-region-dev=//g')
+          echo "Finding aws-region-dev=$aws-region-dev"
+          aws-repository-uri-dev=$(grep -rw './env_vars.txt' -e 'aws-repository-uri-dev' | sed 's/aws-repository-uri-dev=//g')
+          echo "Finding aws-repository-uri-dev=$aws-repository-uri-dev"
 
 #  deploy-dev:
 #    name: Deploy application to DEV
