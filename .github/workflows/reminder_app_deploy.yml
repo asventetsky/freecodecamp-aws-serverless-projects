@@ -28,7 +28,7 @@ jobs:
   build:
     name: Build application
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@aa67ca00bde47124a5d981e87966c900529e8fcb
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@8078b86d99c1f6e2dc1b091909dd9c054323983d
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
@@ -70,7 +70,7 @@ jobs:
   deploy-dev:
     name: Deploy application to DEV
     needs: prepare-environment-variables
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@2980a2cd6670514aae8885d1cc1571fbb266c819
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@8078b86d99c1f6e2dc1b091909dd9c054323983d
     with:
       environment: dev
       application: ${{ vars.REMINDER_APP }}
