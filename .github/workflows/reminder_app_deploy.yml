@@ -44,7 +44,6 @@ jobs:
       application: ${{ vars.REMINDER_APP }}
     steps:
       - name: "🔧 construct environment variables file"
-        id: construct
         env:
           REMINDER_APP_AWS_ACCESS_KEY_ID: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
           REMINDER_APP_AWS_SECRET_ACCESS_KEY: ${{ secrets.REMINDER_APP_AWS_SECRET_ACCESS_KEY }}
