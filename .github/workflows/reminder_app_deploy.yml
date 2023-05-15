@@ -56,11 +56,11 @@ jobs:
           echo "aws_repository_uri_${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> $env_vars_file
 
 
-#          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
-#          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> $env_vars_file
-#
-#          echo "::add-mask::$REMINDER_APP_AWS_SECRET_ACCESS_KEY"
-#          echo "aws_secret_access_key_${{ matrix.environment }}=$REMINDER_APP_AWS_SECRET_ACCESS_KEY" >> $env_vars_file
+          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
+          echo "aws_access_key_id_${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> $env_vars_file
+
+          echo "::add-mask::$REMINDER_APP_AWS_SECRET_ACCESS_KEY"
+          echo "aws_secret_access_key_${{ matrix.environment }}=$REMINDER_APP_AWS_SECRET_ACCESS_KEY" >> $env_vars_file
 
       - name: "💾 save environment variables"
         uses: actions/cache@v3
@@ -71,7 +71,7 @@ jobs:
   deploy-dev:
     name: Deploy application to DEV
     needs: prepare-environment-variables
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@50b4c0d23ca9281fbb7dfadf08f28b276c281b2c
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@ac27879dcf69d6280a691dd224c56d21c46a66ee
     with:
       environment: dev
       application: ${{ vars.REMINDER_APP }}
