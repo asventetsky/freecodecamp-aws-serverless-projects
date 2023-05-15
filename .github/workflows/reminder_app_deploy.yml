@@ -70,7 +70,7 @@ jobs:
   deploy-dev:
     name: Deploy application to DEV
     needs: prepare-environment-variables
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@4bdbb895d64c04fc7274ae77cc4f9c035efa2b76
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@2980a2cd6670514aae8885d1cc1571fbb266c819
     with:
       environment: dev
       application: ${{ vars.REMINDER_APP }}
