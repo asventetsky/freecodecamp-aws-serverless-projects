@@ -43,19 +43,47 @@ jobs:
     steps:
       - name: "🔧 print environment specific variables"
         id: construct
+        env:
+          REMINDER_APP_AWS_ACCESS_KEY_ID: ${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}
+          REMINDER_API_APP_AWS_SECRET_ACCESS_KEY: ${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}
         run: |
           echo "aws-region-${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REGION }}" >> ./env_vars.txt
           echo "aws-repository-uri-${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> ./env_vars.txt
-          echo "::add-mask::${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}"
-          echo "aws-access-key-id-${{ matrix.environment }}=${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}" >> ./env_vars.txt
-          echo "::add-mask::${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}"
-          echo "aws-access-key-id-${{ matrix.environment }}=${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}" >> ./env_vars.txt
+          echo "::add-mask::$REMINDER_APP_AWS_ACCESS_KEY_ID"
+          echo "aws-access-key-id-${{ matrix.environment }}=$REMINDER_APP_AWS_ACCESS_KEY_ID" >> ./env_vars.txt
+          echo "::add-mask::$REMINDER_API_APP_AWS_SECRET_ACCESS_KEY"
+          echo "aws-access-key-id-${{ matrix.environment }}=$REMINDER_API_APP_AWS_SECRET_ACCESS_KEY" >> ./env_vars.txt
 
-      - name: "💾 save project dependencies"
+      - name: "💾 save environment variables"
         uses: actions/cache@v3
         with:
-          key: environment-variables
+          key: ${{ inputs.application }}-environment-variables-${{ github.run_number }}
           path: ./env_vars.txt
+
+#  prepare-environment-variables:
+#    #    needs: build
+#    strategy:
+#      matrix:
+#        environment: [ dev, stage ]
+#    environment: ${{ matrix.environment }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: "🔧 print environment specific variables"
+#        id: construct
+#        run: |
+#          echo "aws-region-${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REGION }}" >> ./env_vars.txt
+#          echo "aws-repository-uri-${{ matrix.environment }}=${{ vars.REMINDER_APP_AWS_REPOSITORY_URI }}" >> ./env_vars.txt
+#          echo "::add-mask::${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}"
+#          echo "aws-access-key-id-${{ matrix.environment }}=${{ secrets.REMINDER_APP_AWS_ACCESS_KEY_ID }}" >> ./env_vars.txt
+#          echo "::add-mask::${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}"
+#          echo "aws-access-key-id-${{ matrix.environment }}=${{ secrets.REMINDER_API_APP_AWS_SECRET_ACCESS_KEY }}" >> ./env_vars.txt
+#
+#      - name: "💾 fetch project dependencies"
+#        uses: actions/cache@v3
+#        with:
+#          key: environment-variables
+#            path: ./env_vars.txt
+#          fail-on-cache-miss: true
 
 #  deploy-dev:
 #    name: Deploy application to DEV
