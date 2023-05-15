@@ -40,7 +40,7 @@ jobs:
         environment: [ dev ]
     environment: ${{ matrix.environment }}
     runs-on: ubuntu-latest
-    with:
+    env:
       application: ${{ vars.REMINDER_APP }}
     steps:
       - name: "🔧 construct environment variables file"
@@ -61,7 +61,7 @@ jobs:
       - name: "💾 save environment variables"
         uses: actions/cache@v3
         with:
-          key: ${{ inputs.application }}-environment-variables-${{ github.run_number }}
+          key: ${{ env.application }}-environment-variables-${{ github.run_number }}
           path: ./env_vars_${{ matrix.environment }}.txt
 
   deploy-dev:
