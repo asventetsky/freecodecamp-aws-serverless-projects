@@ -1,9 +1,6 @@
-name: Reminder App DEPLOY
+name: Reminder App DEPLOY BACKEND
 
 on:
-  push:
-    branches:
-      - "reminder-app-initial-ci-cd"
   workflow_dispatch:
 
 jobs:
@@ -28,7 +25,7 @@ jobs:
   build:
     name: Build application
     needs: test
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@8078b86d99c1f6e2dc1b091909dd9c054323983d
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_build_docker_image.yml@ed3d7bb735df26b947d7230aa31cfac39a6ffc4f
     with:
       application: ${{ vars.REMINDER_APP }}
       source-dir: source/backend
@@ -70,7 +67,7 @@ jobs:
   deploy-dev:
     name: Deploy application to DEV
     needs: prepare-environment-variables
-    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@d94a9ca2c37ca28f22c3eb864b2c4933532239b0
+    uses: asventetsky/freecodecamp-aws-serverless-projects-common/.github/workflows/_python_deploy_docker_image.yml@ed3d7bb735df26b947d7230aa31cfac39a6ffc4f
     with:
       environment: dev
       application: ${{ vars.REMINDER_APP }}
