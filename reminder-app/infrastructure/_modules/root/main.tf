@@ -101,7 +101,7 @@ module "lambda_reminders_get" {
 # API Gateway #
 #=============#
 module "api_gateway" {
-  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=5663484b343d592cb9fb364d61a3d87cd43aa9d0"
+  source = "github.com/asventetsky/freecodecamp-aws-serverless-projects-common//terraform/module/aws/api_gateway?ref=d5bbacdca00f5d0fb36ed855fd17646a9f2b8c78"
 
   api_gateway_name = "reminder-app-${var.region}-${var.env}"
   cognito_auth = false
